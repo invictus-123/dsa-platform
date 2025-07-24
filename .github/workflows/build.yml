@@ -44,7 +44,7 @@ jobs:
       - name: Build and run tests with Maven
         working-directory: ./backend
         env:
-          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:${{ job.services.postgres.ports[5432] }}/dsa_platform_test
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/dsa_platform_test
           SPRING_DATASOURCE_USERNAME: testuser
           SPRING_DATASOURCE_PASSWORD: testpassword
           SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
