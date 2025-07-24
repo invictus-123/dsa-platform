@@ -43,10 +43,9 @@ jobs:
 
       - name: Build and run tests with Maven
         working-directory: ./backend
-        run: >
-          mvn -B verify 
-          -Dspring.datasource.url=jdbc:postgresql://localhost:${{ job.services.postgres.ports[5432] }}/dsa_platform_test
-          -Dspring.datasource.username=testuser
-          -Dspring.datasource.password=testpassword
-          -Dspring.datasource.driver-class-name=org.postgresql.Driver
-          -Dspring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:${{ job.services.postgres.ports[5432] }}/dsa_platform_test
+          SPRING_DATASOURCE_USERNAME: testuser
+          SPRING_DATASOURCE_PASSWORD: testpassword
+          SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+        run: mvn -B verify
