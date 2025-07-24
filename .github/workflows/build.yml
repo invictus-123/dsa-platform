@@ -43,7 +43,6 @@ jobs:
 
       - name: Build and run tests with Maven
         working-directory: ./backend
-        env:
-          DB_HOST: localhost
-          DB_PORT: ${{ job.services.postgres.ports[5432] }} # Dynamically gets the mapped port
-        run: mvn -B verify
+        run: >
+          mvn -B verify 
+          -Dspring.datasource.url=jdbc:postgresql://localhost:${{ job.services.postgres.ports[5432] }}/dsa_platform_test
