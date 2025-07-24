@@ -16,7 +16,7 @@ A full-stack web application for solving Data Structures and Algorithms (DSA) pr
 - Upload test cases
 - View all user submissions and stats
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Backend
 - **Spring Boot (Java)**
