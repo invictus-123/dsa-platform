@@ -43,7 +43,7 @@ jobs:
 
       - name: Wait for PostgreSQL
         run: |
-          until nc -z postgres ${{ job.services.postgres.ports[5432] }}; do
+          until nc -z localhost ${{ job.services.postgres.ports[5432] }}; do
             echo "Waiting for PostgreSQL..."
             sleep 10
           done
@@ -52,7 +52,7 @@ jobs:
       - name: Build and run tests with Maven
         working-directory: ./backend
         env:
-          SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:${{ job.services.postgres.ports[5432] }}/dsa_platform_test
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:${{ job.services.postgres.ports[5432] }}/dsa_platform_test
           SPRING_DATASOURCE_USERNAME: testuser
           SPRING_DATASOURCE_PASSWORD: testpassword
           SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
