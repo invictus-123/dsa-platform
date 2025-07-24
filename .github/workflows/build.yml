@@ -46,3 +46,7 @@ jobs:
         run: >
           mvn -B verify 
           -Dspring.datasource.url=jdbc:postgresql://localhost:${{ job.services.postgres.ports[5432] }}/dsa_platform_test
+          -Dspring.datasource.username=testuser
+          -Dspring.datasource.password=testpassword
+          -Dspring.datasource.driver-class-name=org.postgresql.Driver
+          -Dspring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
