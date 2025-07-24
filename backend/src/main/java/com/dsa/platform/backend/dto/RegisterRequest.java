@@ -1,4 +1,4 @@
-package com.dsa.platform.backend.service.dto;
+package com.dsa.platform.backend.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

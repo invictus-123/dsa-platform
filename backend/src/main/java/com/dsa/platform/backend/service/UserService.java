@@ -6,11 +6,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.dsa.platform.backend.dto.RegisterRequest;
+import com.dsa.platform.backend.exception.UserAlreadyExistsException;
 import com.dsa.platform.backend.model.User;
 import com.dsa.platform.backend.model.shared.UserRole;
 import com.dsa.platform.backend.repository.UserRepository;
-import com.dsa.platform.backend.service.dto.RegisterRequest;
-import com.dsa.platform.backend.service.exception.UserAlreadyExistsException;
 
 /**
  * Service class for managing users.

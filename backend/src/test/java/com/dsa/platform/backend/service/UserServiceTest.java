@@ -22,11 +22,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.dsa.platform.backend.dto.RegisterRequest;
+import com.dsa.platform.backend.exception.UserAlreadyExistsException;
 import com.dsa.platform.backend.model.User;
 import com.dsa.platform.backend.model.shared.UserRole;
 import com.dsa.platform.backend.repository.UserRepository;
-import com.dsa.platform.backend.service.dto.RegisterRequest;
-import com.dsa.platform.backend.service.exception.UserAlreadyExistsException;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {

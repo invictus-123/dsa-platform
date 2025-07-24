@@ -1,4 +1,4 @@
-package com.dsa.platform.backend.service.exception;
+package com.dsa.platform.backend.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
