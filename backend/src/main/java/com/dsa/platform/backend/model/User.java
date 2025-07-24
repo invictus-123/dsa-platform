@@ -15,6 +15,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -34,7 +35,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users")
+@Table(name = "users", indexes = {
+    @Index(name = "idx_users_handle", columnList = "handle"),
+    @Index(name = "idx_users_email", columnList = "email")
+})
 public class User {
 
     /**
@@ -82,7 +86,6 @@ public class User {
      */
     @JsonIgnore // Exclude from JSON serialization to protect sensitive data
     @NotBlank
-    @Size(min = 8)
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 

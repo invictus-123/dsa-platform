@@ -20,5 +20,13 @@ public interface UserRepository extends JpaRepository<User, UUID> {
      *         otherwise.
      */
     Optional<User> findByHandle(String handle);
-
+    
+    /**
+     * Finds the user by their unique email.
+     *
+     * @param email The email to search for.
+     * @return An Optional containing the user if found, or an empty Optional
+     *         otherwise.
+     */
+    Optional<User> findByEmail(String email);
 }
