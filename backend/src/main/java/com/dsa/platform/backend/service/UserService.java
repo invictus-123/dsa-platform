@@ -39,12 +39,12 @@ public class UserService {
      */
     @Transactional
     public User registerUser(RegisterRequest request) {
-        logger.info("Attempting to register new user with username: {}", request.getHandle());
+        logger.info("Attempting to register new user with username: {}", request.handle());
 
-        validateUserDoesNotExist(request.getHandle(), request.getEmail());
+        validateUserDoesNotExist(request.handle(), request.email());
 
         User newUser = createUserFromRequest(request);
-        String hashedPassword = passwordEncoder.encode(request.getPassword());
+        String hashedPassword = passwordEncoder.encode(request.password());
         newUser.setPasswordHash(hashedPassword);
 
         User savedUser = userRepository.save(newUser);
@@ -67,10 +67,10 @@ public class UserService {
 
     private User createUserFromRequest(RegisterRequest request) {
         User user = new User();
-        user.setHandle(request.getHandle());
-        user.setEmail(request.getEmail());
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
+        user.setHandle(request.handle());
+        user.setEmail(request.email());
+        user.setFirstName(request.firstName());
+        user.setLastName(request.lastName());
         user.setRole(UserRole.USER); // Default role for new users
         return user;
     }

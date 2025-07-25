@@ -42,12 +42,12 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        registerRequest = new RegisterRequest();
-        registerRequest.setHandle("testuser");
-        registerRequest.setEmail("test@example.com");
-        registerRequest.setPassword("password123");
-        registerRequest.setFirstName("Test");
-        registerRequest.setLastName("User");
+        registerRequest = new RegisterRequest(
+                "testuser",
+                "test@example.com",
+                "password123",
+                "Test",
+                "User");
     }
 
     @Test
@@ -57,8 +57,8 @@ class UserServiceTest {
         when(passwordEncoder.encode(anyString())).thenReturn("hashedPassword123");
         User savedUser = new User();
         savedUser.setId(UUID.randomUUID());
-        savedUser.setHandle(registerRequest.getHandle());
-        savedUser.setEmail(registerRequest.getEmail());
+        savedUser.setHandle(registerRequest.handle());
+        savedUser.setEmail(registerRequest.email());
         savedUser.setPasswordHash("hashedPassword123");
         savedUser.setRole(UserRole.USER);
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
@@ -84,7 +84,7 @@ class UserServiceTest {
                 UserAlreadyExistsException.class,
                 () -> userService.registerUser(registerRequest));
 
-        assertEquals("Handle '" + registerRequest.getHandle() + "' is already taken.",
+        assertEquals("Handle '" + registerRequest.handle() + "' is already taken.",
                 exception.getMessage());
         verify(userRepository, never()).save(any(User.class));
     }
@@ -98,7 +98,7 @@ class UserServiceTest {
                 UserAlreadyExistsException.class,
                 () -> userService.registerUser(registerRequest));
 
-        assertEquals("Email '" + registerRequest.getEmail() + "' is already registered.",
+        assertEquals("Email '" + registerRequest.email() + "' is already registered.",
                 exception.getMessage());
         verify(userRepository, never()).save(any(User.class));
     }
