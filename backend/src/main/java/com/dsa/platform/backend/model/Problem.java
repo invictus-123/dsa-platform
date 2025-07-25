@@ -3,11 +3,8 @@ package com.dsa.platform.backend.model;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.hibernate.annotations.CreationTimestamp;
-
 import com.dsa.platform.backend.model.shared.ProblemDifficulty;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,10 +27,11 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
- * Represents the 'problems' table in the database.
- * This class is a JPA entity that maps to problem data.
+ * Represents the 'problems' table in the database. This class is a JPA entity that maps to problem
+ * data.
  */
 @Data
 @NoArgsConstructor
@@ -82,8 +80,8 @@ public class Problem {
     private Integer memoryLimitMb;
 
     /**
-     * The difficulty level of the problem.
-     * Stored as a String in the database (e.g., "EASY", "MEDIUM").
+     * The difficulty level of the problem. Stored as a String in the database (e.g., "EASY",
+     * "MEDIUM").
      */
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -91,11 +89,12 @@ public class Problem {
     private ProblemDifficulty difficulty;
 
     /**
-     * The user (admin) who created this problem.
-     * This establishes a many-to-one relationship with the User entity.
+     * The user (admin) who created this problem. This establishes a many-to-one relationship with
+     * the User entity.
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @ToString.Exclude
     private User createdBy;
 
     /**
@@ -107,22 +106,22 @@ public class Problem {
     private Instant createdAt;
 
     /**
-     * The tags associated with this problem.
-     * This establishes a one-to-many relationship with the Tag entity.
-     * 'mappedBy = "problem"' indicates that the Tag entity owns the relationship.
-     * 'cascade = CascadeType.ALL' means operations (like save, delete) on a Problem
-     * will cascade to its associated Tags.
+     * The tags associated with this problem. This establishes a one-to-many relationship with the
+     * Tag entity. 'mappedBy = "problem"' indicates that the Tag entity owns the relationship.
+     * 'cascade = CascadeType.ALL' means operations (like save, delete) on a Problem will cascade to
+     * its associated Tags.
      */
     @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
     private List<Tag> tags = new ArrayList<>();
 
     /**
-     * The test cases associated with this problem.
-     * This establishes a one-to-many relationship with the TestCase entity.
-     * 'mappedBy = "problem"' indicates that the TestCase entity owns the relationship.
-     * 'cascade = CascadeType.ALL' means operations (like save, delete) on a Problem
+     * The test cases associated with this problem. This establishes a one-to-many relationship with
+     * the TestCase entity. 'mappedBy = "problem"' indicates that the TestCase entity owns the
+     * relationship. 'cascade = CascadeType.ALL' means operations (like save, delete) on a Problem
      * will cascade to its associated TestCases.
      */
     @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
     private List<TestCase> testCases = new ArrayList<>();
 }
