@@ -1,12 +1,14 @@
 package com.dsa.platform.backend.model;
 
 import java.time.Instant;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.dsa.platform.backend.model.shared.ProblemDifficulty;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -17,6 +19,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -43,8 +46,8 @@ public class Problem {
      * The primary key for the problems table.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     /**
      * The title of the problem.
@@ -67,8 +70,8 @@ public class Problem {
      */
     @Min(1)
     @Max(10)
-    @Column(name = "time_limit_seconds", nullable = false, precision = 2)
-    private Double timeLimitSeconds;
+    @Column(name = "time_limit_second", nullable = false, precision = 2)
+    private Double timeLimitSecond;
 
     /**
      * The maximum memory allowed for a solution, in megabytes.
@@ -102,4 +105,24 @@ public class Problem {
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
+
+    /**
+     * The tags associated with this problem.
+     * This establishes a one-to-many relationship with the Tag entity.
+     * 'mappedBy = "problem"' indicates that the Tag entity owns the relationship.
+     * 'cascade = CascadeType.ALL' means operations (like save, delete) on a Problem
+     * will cascade to its associated Tags.
+     */
+    @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Tag> tags = new ArrayList<>();
+
+    /**
+     * The test cases associated with this problem.
+     * This establishes a one-to-many relationship with the TestCase entity.
+     * 'mappedBy = "problem"' indicates that the TestCase entity owns the relationship.
+     * 'cascade = CascadeType.ALL' means operations (like save, delete) on a Problem
+     * will cascade to its associated TestCases.
+     */
+    @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TestCase> testCases = new ArrayList<>();
 }

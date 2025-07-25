@@ -22,7 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.dsa.platform.backend.dto.RegisterRequest;
+import com.dsa.platform.backend.dto.request.RegisterRequest;
 import com.dsa.platform.backend.exception.UserAlreadyExistsException;
 import com.dsa.platform.backend.model.User;
 import com.dsa.platform.backend.model.shared.UserRole;

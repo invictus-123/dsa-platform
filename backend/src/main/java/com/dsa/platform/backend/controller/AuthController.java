@@ -12,10 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dsa.platform.backend.dto.AuthResponse;
-import com.dsa.platform.backend.dto.LoginRequest;
-import com.dsa.platform.backend.dto.RegisterRequest;
-import com.dsa.platform.backend.model.User;
+import com.dsa.platform.backend.dto.request.LoginRequest;
+import com.dsa.platform.backend.dto.request.RegisterRequest;
+import com.dsa.platform.backend.dto.response.AuthResponse;
 import com.dsa.platform.backend.service.UserService;
 import com.dsa.platform.backend.util.JwtUtil;
 
@@ -30,9 +29,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
 
-    public AuthController(
-            UserService userService,
-            AuthenticationManager authenticationManager,
+    public AuthController(UserService userService, AuthenticationManager authenticationManager,
             JwtUtil jwtUtil) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
@@ -40,18 +37,21 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
-        User xdd = userService.registerUser(registerRequest);
-        logger.debug("XXX {}", xdd);
+    public ResponseEntity<String> registerUser(
+            @Valid @RequestBody RegisterRequest registerRequest) {
+        logger.info("Received registration request for user: {}", registerRequest.handle());
+
+        userService.registerUser(registerRequest);
         return ResponseEntity.ok("User registered successfully");
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> loginUser(@Valid @RequestBody LoginRequest loginRequest) {
         logger.info("Attempting to authenticate user with handle: {}", loginRequest.handle());
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                    loginRequest.handle(), loginRequest.password()));
+
+        Authentication authentication =
+                authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                        loginRequest.handle(), loginRequest.password()));
 
         final UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         final String token = jwtUtil.generateToken(userDetails);

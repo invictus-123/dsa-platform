@@ -1,15 +1,16 @@
 package com.dsa.platform.backend.service;
 
+import static com.dsa.platform.backend.converter.UserConverter.toUserFromRegisterRequestWithoutPassword;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.dsa.platform.backend.dto.RegisterRequest;
+import com.dsa.platform.backend.dto.request.RegisterRequest;
 import com.dsa.platform.backend.exception.UserAlreadyExistsException;
 import com.dsa.platform.backend.model.User;
-import com.dsa.platform.backend.model.shared.UserRole;
 import com.dsa.platform.backend.repository.UserRepository;
 
 /**
@@ -43,7 +44,7 @@ public class UserService {
 
         validateUserDoesNotExist(request.handle(), request.email());
 
-        User newUser = createUserFromRequest(request);
+        User newUser = toUserFromRegisterRequestWithoutPassword(request);
         String hashedPassword = passwordEncoder.encode(request.password());
         newUser.setPasswordHash(hashedPassword);
 
@@ -63,15 +64,5 @@ public class UserService {
             logger.error("User with email '{}' already exists", email);
             throw new UserAlreadyExistsException("Email '" + email + "' is already registered.");
         }
-    }
-
-    private User createUserFromRequest(RegisterRequest request) {
-        User user = new User();
-        user.setHandle(request.handle());
-        user.setEmail(request.email());
-        user.setFirstName(request.firstName());
-        user.setLastName(request.lastName());
-        user.setRole(UserRole.USER); // Default role for new users
-        return user;
     }
 }

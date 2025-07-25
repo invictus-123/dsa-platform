@@ -24,9 +24,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.dsa.platform.backend.dto.AuthResponse;
-import com.dsa.platform.backend.dto.LoginRequest;
-import com.dsa.platform.backend.dto.RegisterRequest;
+import com.dsa.platform.backend.dto.request.LoginRequest;
+import com.dsa.platform.backend.dto.request.RegisterRequest;
+import com.dsa.platform.backend.dto.response.AuthResponse;
 import com.dsa.platform.backend.model.User;
 import com.dsa.platform.backend.service.UserService;
 import com.dsa.platform.backend.util.JwtUtil;
