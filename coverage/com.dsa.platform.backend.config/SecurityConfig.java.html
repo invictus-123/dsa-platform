@@ -21,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 <span class="fc" id="L23">	private static final String[] PUBLIC_ENDPOINTS = new String[] {</span>
+		&quot;/h2-console/**&quot;,
 		&quot;/api/v1/auth/login&quot;,
 		&quot;/api/v1/auth/register&quot;,
 		&quot;/api/v1/problems/{id}&quot;,
@@ -33,10 +34,10 @@ public class SecurityConfig {
 	private final JwtAuthFilter jwtAuthFilter;
 	private final CustomUserDetailsService userDetailsService;
 
-<span class="fc" id="L36">	public SecurityConfig(JwtAuthFilter jwtAuthFilter, CustomUserDetailsService userDetailsService) {</span>
-<span class="fc" id="L37">		this.jwtAuthFilter = jwtAuthFilter;</span>
-<span class="fc" id="L38">		this.userDetailsService = userDetailsService;</span>
-<span class="fc" id="L39">	}</span>
+<span class="fc" id="L37">	public SecurityConfig(JwtAuthFilter jwtAuthFilter, CustomUserDetailsService userDetailsService) {</span>
+<span class="fc" id="L38">		this.jwtAuthFilter = jwtAuthFilter;</span>
+<span class="fc" id="L39">		this.userDetailsService = userDetailsService;</span>
+<span class="fc" id="L40">	}</span>
 
 	/**
 	 * Creates a PasswordEncoder bean that can be injected into other components.
@@ -45,7 +46,7 @@ public class SecurityConfig {
 	 */
 	@Bean
 	public PasswordEncoder passwordEncoder() {
-<span class="fc" id="L48">		return new BCryptPasswordEncoder();</span>
+<span class="fc" id="L49">		return new BCryptPasswordEncoder();</span>
 	}
 
 	/**
@@ -59,16 +60,16 @@ public class SecurityConfig {
 	 */
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-<span class="fc" id="L62">		return http.csrf(csrf -&gt; csrf.disable())</span>
-<span class="fc" id="L63">				.authorizeHttpRequests(auth -&gt; auth.requestMatchers(PUBLIC_ENDPOINTS)</span>
-<span class="fc" id="L64">						.permitAll()</span>
-<span class="fc" id="L65">						.anyRequest()</span>
-<span class="fc" id="L66">						.authenticated())</span>
-<span class="fc" id="L67">				.headers(headers -&gt; headers.frameOptions(FrameOptionsConfig::sameOrigin))</span>
-<span class="fc" id="L68">				.sessionManagement(session -&gt; session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))</span>
-<span class="fc" id="L69">				.authenticationProvider(authenticationProvider())</span>
-<span class="fc" id="L70">				.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)</span>
-<span class="fc" id="L71">				.build();</span>
+<span class="fc" id="L63">		return http.csrf(csrf -&gt; csrf.disable())</span>
+<span class="fc" id="L64">				.authorizeHttpRequests(auth -&gt; auth.requestMatchers(PUBLIC_ENDPOINTS)</span>
+<span class="fc" id="L65">						.permitAll()</span>
+<span class="fc" id="L66">						.anyRequest()</span>
+<span class="fc" id="L67">						.authenticated())</span>
+<span class="fc" id="L68">				.headers(headers -&gt; headers.frameOptions(FrameOptionsConfig::sameOrigin))</span>
+<span class="fc" id="L69">				.sessionManagement(session -&gt; session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))</span>
+<span class="fc" id="L70">				.authenticationProvider(authenticationProvider())</span>
+<span class="fc" id="L71">				.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)</span>
+<span class="fc" id="L72">				.build();</span>
 	}
 
 	/**
@@ -79,10 +80,10 @@ public class SecurityConfig {
 	 */
 	@Bean
 	public AuthenticationProvider authenticationProvider() {
-<span class="fc" id="L82">		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();</span>
-<span class="fc" id="L83">		authProvider.setUserDetailsService(userDetailsService);</span>
-<span class="fc" id="L84">		authProvider.setPasswordEncoder(passwordEncoder());</span>
-<span class="fc" id="L85">		return authProvider;</span>
+<span class="fc" id="L83">		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();</span>
+<span class="fc" id="L84">		authProvider.setUserDetailsService(userDetailsService);</span>
+<span class="fc" id="L85">		authProvider.setPasswordEncoder(passwordEncoder());</span>
+<span class="fc" id="L86">		return authProvider;</span>
 	}
 
 	/**
@@ -96,7 +97,7 @@ public class SecurityConfig {
 	 */
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-<span class="fc" id="L99">		return config.getAuthenticationManager();</span>
+<span class="fc" id="L100">		return config.getAuthenticationManager();</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
