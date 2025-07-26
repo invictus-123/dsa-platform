@@ -22,9 +22,9 @@ import com.dsa.platform.backend.service.CustomUserDetailsService;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-<span class="fc" id="L25">    private static final String[] PUBLIC_ENDPOINTS =</span>
-            new String[] {&quot;/api/auth/login&quot;, &quot;/api/auth/register&quot;, &quot;/api/problem/{id}&quot;,
-                    &quot;/api/problem/list&quot;, &quot;/swagger-ui.html&quot;, &quot;/swagger-ui/**&quot;, &quot;/v3/api-docs/**&quot;};
+<span class="fc" id="L25">    private static final String[] PUBLIC_ENDPOINTS = new String[] {&quot;/api/v1/auth/login&quot;,</span>
+            &quot;/api/v1/auth/register&quot;, &quot;/api/v1/problems/{id}&quot;, &quot;/api/v1/problems/list&quot;,
+            &quot;/swagger-ui.html&quot;, &quot;/swagger-ui/**&quot;, &quot;/v3/api-docs/**&quot;};
 
     private final JwtAuthFilter jwtAuthFilter;
     private final CustomUserDetailsService userDetailsService;
