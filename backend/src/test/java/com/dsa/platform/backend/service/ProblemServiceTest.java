@@ -3,6 +3,9 @@ package com.dsa.platform.backend.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
@@ -11,7 +14,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import com.dsa.platform.backend.dto.ui.ProblemDetailsUi;
+import com.dsa.platform.backend.dto.ui.ProblemSummaryUi;
 import com.dsa.platform.backend.dto.ui.TestCaseUi;
 import com.dsa.platform.backend.exception.ProblemNotFoundException;
 import com.dsa.platform.backend.model.Problem;
@@ -23,12 +32,44 @@ import com.dsa.platform.backend.repository.ProblemRepository;
 
 @ExtendWith(MockitoExtension.class)
 class ProblemServiceTest {
+    private static final int PAGE_SIZE = 50;
 
     @Mock
     private ProblemRepository problemRepository;
 
     @InjectMocks
     private ProblemService problemService;
+
+    @Test
+    void listProblems_whenProblemsExist_returnsProblemSummaryList() {
+        int page = 5;
+        Problem mockProblem = new Problem();
+        mockProblem.setId(1L);
+        mockProblem.setTitle("Two Sum");
+        mockProblem.setDifficulty(ProblemDifficulty.EASY);
+        List<Problem> problems = List.of(mockProblem, mockProblem);
+        Pageable pageable = PageRequest.of(page - 1, PAGE_SIZE, Sort.by("createdAt").descending());
+        Page<Problem> problemPage = new PageImpl<>(problems, pageable, problems.size());
+        when(problemRepository.findAll(any(Pageable.class))).thenReturn(problemPage);
+
+        List<ProblemSummaryUi> result = problemService.listProblems(page);
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    void listProblems_whenNoProblemsExist_returnsEmptyList() {
+        int page = 1;
+        Pageable pageable = PageRequest.of(page - 1, PAGE_SIZE, Sort.by("createdAt").descending());
+        when(problemRepository.findAll(pageable)).thenReturn(Page.empty());
+
+        List<ProblemSummaryUi> result = problemService.listProblems(page);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        verify(problemRepository).findAll(any(Pageable.class));
+    }
 
     @Test
     void getProblemDetailsById_whenProblemExists_shouldReturnProblemDetails() {
@@ -46,13 +87,12 @@ class ProblemServiceTest {
                 "Hidden Output 1", "Hidden Explanation 1", false);
         mockProblem.setTestCases(List.of(sampleTestCase, hiddenTestCase));
         when(problemRepository.findById(problemId)).thenReturn(Optional.of(mockProblem));
-        ProblemDetailsUi expectedProblemDetails =
-                new ProblemDetailsUi(mockProblem.getId(), mockProblem.getTitle(),
-                        mockProblem.getStatement(), mockProblem.getTimeLimitSecond(),
-                        mockProblem.getMemoryLimitMb(), mockProblem.getDifficulty(),
-                        List.of(ProblemTag.ARRAY, ProblemTag.GREEDY),
-                        List.of(new TestCaseUi(sampleTestCase.getInput(),
-                                sampleTestCase.getOutput(), sampleTestCase.getExplanation())));
+        ProblemDetailsUi expectedProblemDetails = new ProblemDetailsUi(mockProblem.getId(),
+                mockProblem.getTitle(), mockProblem.getStatement(),
+                mockProblem.getTimeLimitSecond(), mockProblem.getMemoryLimitMb(),
+                mockProblem.getDifficulty(), List.of(ProblemTag.ARRAY, ProblemTag.GREEDY),
+                List.of(new TestCaseUi(sampleTestCase.getInput(), sampleTestCase.getOutput(),
+                        sampleTestCase.getExplanation())));
 
         ProblemDetailsUi result = problemService.getProblemDetailsById(problemId);
 

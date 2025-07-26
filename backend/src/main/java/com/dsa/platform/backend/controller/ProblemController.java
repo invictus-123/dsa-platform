@@ -7,8 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.dsa.platform.backend.dto.response.GetProblemByIdResponse;
+import com.dsa.platform.backend.dto.response.ListProblemsResponse;
 import com.dsa.platform.backend.service.ProblemService;
 
 /**
@@ -23,6 +25,21 @@ public class ProblemController {
 
     public ProblemController(ProblemService problemService) {
         this.problemService = problemService;
+    }
+
+    /**
+     * Handles GET requests to fetch a list of all problems with pagination.
+     *
+     * @param page The page number to retrieve (default is 1).
+     * @return A ResponseEntity containing a paginated list of problems.
+     */
+    @GetMapping("/list")
+    public ResponseEntity<ListProblemsResponse> listProblems(
+            @RequestParam(defaultValue = "1") int page) {
+        logger.info("Received call to fetch all problems with pagination: page={}", page);
+
+        ListProblemsResponse response = new ListProblemsResponse(problemService.listProblems(page));
+        return ResponseEntity.ok(response);
     }
 
     /**
