@@ -32,9 +32,6 @@ jobs:
         run: mvn -B clean verify
         working-directory: ./backend
 
-      - name: List files in target directory for debugging
-        run: ls -R backend/target
-
       - name: Upload JaCoCo coverage report
         uses: actions/upload-artifact@v4
         with:
