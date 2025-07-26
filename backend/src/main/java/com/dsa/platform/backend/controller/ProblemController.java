@@ -28,7 +28,8 @@ public class ProblemController {
     }
 
     /**
-     * Handles GET requests to fetch a list of all problems with pagination.
+     * Handles GET requests to fetch a list of all problems with pagination, sorted by creation date
+     * in descending order.
      *
      * @param page The page number to retrieve (default is 1).
      * @return A ResponseEntity containing a paginated list of problems.
