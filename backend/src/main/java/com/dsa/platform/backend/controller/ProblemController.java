@@ -1,4 +1,3 @@
-// src/main/java/com/dsa/platform/backend/controller/ProblemController.java
 package com.dsa.platform.backend.controller;
 
 import org.slf4j.Logger;
