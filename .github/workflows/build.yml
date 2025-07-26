@@ -38,3 +38,23 @@ jobs:
           name: jacoco-html-report
           path: backend/target/site/jacoco/
           retention-days: 7
+
+  deploy-report:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      
+    steps:
+      - name: Download JaCoCo report artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: jacoco-html-report
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
