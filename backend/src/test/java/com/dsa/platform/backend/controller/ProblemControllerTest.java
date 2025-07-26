@@ -3,9 +3,13 @@ package com.dsa.platform.backend.controller;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.dsa.platform.backend.dto.request.CreateProblemRequest;
+import com.dsa.platform.backend.dto.request.CreateTestCaseRequest;
+import com.dsa.platform.backend.dto.response.CreateProblemResponse;
 import com.dsa.platform.backend.dto.response.GetProblemByIdResponse;
 import com.dsa.platform.backend.dto.response.ListProblemsResponse;
 import com.dsa.platform.backend.dto.ui.ProblemDetailsUi;
@@ -23,6 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -107,6 +112,32 @@ class ProblemControllerTest {
 				.thenThrow(new ProblemNotFoundException("Problem not found with id: " + problemId));
 
 		mockMvc.perform(get("/api/v1/problems/{id}", problemId)).andExpect(status().isNotFound());
+	}
+
+	@Test
+	void createProblem_returnsProblemDetails() throws Exception {
+		CreateProblemRequest request = new CreateProblemRequest(
+				"Title",
+				"Statement",
+				ProblemDifficulty.EASY,
+				2.0,
+				256,
+				List.of(ProblemTag.ARRAY),
+				List.of(new CreateTestCaseRequest("Sample input", "Sample output", false, "Explanation")));
+		ProblemDetailsUi problemDetailsUi = createProblemDetailsUi(1L);
+		when(problemService.createProblem(request)).thenReturn(problemDetailsUi);
+		CreateProblemResponse expectedResponse = new CreateProblemResponse(problemDetailsUi);
+
+		ResponseEntity<CreateProblemResponse> response = problemController.createProblem(request);
+
+		assertEquals(201, response.getStatusCode().value());
+		assertEquals(expectedResponse, response.getBody());
+
+		mockMvc.perform(post("/api/v1/problems")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(request)))
+				.andExpect(status().isCreated())
+				.andExpect(content().json(objectMapper.writeValueAsString(expectedResponse)));
 	}
 
 	private ProblemSummaryUi createProblemSummaryUi(Long id) {

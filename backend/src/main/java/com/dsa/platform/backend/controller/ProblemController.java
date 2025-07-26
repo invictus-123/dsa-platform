@@ -1,13 +1,19 @@
 package com.dsa.platform.backend.controller;
 
+import com.dsa.platform.backend.dto.request.CreateProblemRequest;
+import com.dsa.platform.backend.dto.response.CreateProblemResponse;
 import com.dsa.platform.backend.dto.response.GetProblemByIdResponse;
 import com.dsa.platform.backend.dto.response.ListProblemsResponse;
 import com.dsa.platform.backend.service.ProblemService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,5 +60,21 @@ public class ProblemController {
 
 		GetProblemByIdResponse response = new GetProblemByIdResponse(problemService.getProblemDetailsById(id));
 		return ResponseEntity.ok(response);
+	}
+
+	/**
+	 * Handles POST requests to create a new problem.
+	 * Only accessible by users with the 'ADMIN' role.
+	 *
+	 * @param request The request body containing the problem details.
+	 * @return A ResponseEntity with the created problem and a 201 Created status. Throws a
+	 *         401 error if the user is not authorized to create a problem.
+	 */
+	@PostMapping
+	public ResponseEntity<CreateProblemResponse> createProblem(@Valid @RequestBody CreateProblemRequest request) {
+		logger.info("Received request to create a new problem: {}", request);
+
+		CreateProblemResponse response = new CreateProblemResponse(problemService.createProblem(request));
+		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 }

@@ -1,15 +1,22 @@
 package com.dsa.platform.backend.service;
 
 import static com.dsa.platform.backend.converter.ProblemConverter.toProblemDetailsUi;
+import static com.dsa.platform.backend.converter.ProblemConverter.toProblemFromCreateProblemRequest;
 import static com.dsa.platform.backend.converter.ProblemConverter.toProblemSummaryUi;
 
+import com.dsa.platform.backend.dto.request.CreateProblemRequest;
 import com.dsa.platform.backend.dto.ui.ProblemDetailsUi;
 import com.dsa.platform.backend.dto.ui.ProblemSummaryUi;
 import com.dsa.platform.backend.exception.ProblemNotFoundException;
+import com.dsa.platform.backend.exception.UserNotAuthorizedException;
+import com.dsa.platform.backend.model.Problem;
 import com.dsa.platform.backend.model.Tag;
 import com.dsa.platform.backend.model.TestCase;
+import com.dsa.platform.backend.model.User;
 import com.dsa.platform.backend.model.shared.ProblemTag;
+import com.dsa.platform.backend.model.shared.UserRole;
 import com.dsa.platform.backend.repository.ProblemRepository;
+import com.dsa.platform.backend.util.UserUtil;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,9 +33,11 @@ public class ProblemService {
 	private static final int PAGE_SIZE = 50; // Default page size for pagination
 
 	private final ProblemRepository problemRepository;
+	private final UserUtil userUtil;
 
-	public ProblemService(ProblemRepository problemRepository) {
+	public ProblemService(ProblemRepository problemRepository, UserUtil userUtil) {
 		this.problemRepository = problemRepository;
+		this.userUtil = userUtil;
 	}
 
 	/**
@@ -74,6 +83,31 @@ public class ProblemService {
 					logger.error("Problem with ID {} not found", problemId);
 					return new ProblemNotFoundException("Problem with ID " + problemId + " not found");
 				});
+	}
+
+	/**
+	 * Creates a new problem, including its tags and test cases. This method is transactional to
+	 * ensure all data is saved atomically.
+	 *
+	 * @param request
+	 *            The DTO record containing all information for the new problem.
+	 * @return A DTO representing the newly created problem's details.
+	 */
+	@Transactional
+	public ProblemDetailsUi createProblem(CreateProblemRequest request) {
+		logger.info("Creating a new problem with title: {}", request.title());
+
+		User authenticatedUser = userUtil.getCurrentAuthenticatedUser();
+		if (!authenticatedUser.getRole().equals(UserRole.ADMIN)) {
+			throw new UserNotAuthorizedException("User is not authorized to create problems.");
+		}
+
+		Problem problem = toProblemFromCreateProblemRequest(request);
+		problem.setCreatedBy(authenticatedUser);
+		Problem savedProblem = problemRepository.save(problem);
+		logger.info("Problem created with ID: {} by user: {}", savedProblem.getId(), authenticatedUser.getHandle());
+		return toProblemDetailsUi(
+				savedProblem, listTags(savedProblem.getTags()), listSampleTestCases(savedProblem.getTestCases()));
 	}
 
 	/**
