@@ -24,7 +24,7 @@ import com.dsa.platform.backend.service.CustomUserDetailsService;
 public class SecurityConfig {
     private static final String[] PUBLIC_ENDPOINTS =
             new String[] {"/api/auth/login", "/api/auth/register", "/api/problem/{id}",
-                    "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**"};
+                    "/api/problem/list", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**"};
 
     private final JwtAuthFilter jwtAuthFilter;
     private final CustomUserDetailsService userDetailsService;
