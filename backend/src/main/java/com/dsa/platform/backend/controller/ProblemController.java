@@ -16,7 +16,7 @@ import com.dsa.platform.backend.service.ProblemService;
  * REST controller for handling problem-related requests.
  */
 @RestController
-@RequestMapping("/api/problem")
+@RequestMapping("/api/v1/problems")
 public class ProblemController {
     private static final Logger logger = LoggerFactory.getLogger(ProblemController.class);
 

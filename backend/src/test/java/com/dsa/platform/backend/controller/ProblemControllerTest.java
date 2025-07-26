@@ -59,7 +59,7 @@ class ProblemControllerTest {
         assertEquals(200, response.getStatusCode().value());
         assertEquals(expectedResponse, response.getBody());
 
-        mockMvc.perform(get("/api/problem/list")).andExpect(status().isOk())
+        mockMvc.perform(get("/api/v1/problems/list")).andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(expectedResponse)));
     }
 
@@ -77,7 +77,7 @@ class ProblemControllerTest {
         assertEquals(200, response.getStatusCode().value());
         assertEquals(expectedResponse, response.getBody());
 
-        mockMvc.perform(get("/api/problem/list").param("page", String.valueOf(page)))
+        mockMvc.perform(get("/api/v1/problems/list").param("page", String.valueOf(page)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(expectedResponse)));
     }
@@ -95,7 +95,7 @@ class ProblemControllerTest {
         assertEquals(200, response.getStatusCode().value());
         assertEquals(expectedResponse, response.getBody());
 
-        mockMvc.perform(get("/api/problem/{id}", problemId)).andExpect(status().isOk())
+        mockMvc.perform(get("/api/v1/problems/{id}", problemId)).andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(expectedResponse)));
     }
 
@@ -105,7 +105,7 @@ class ProblemControllerTest {
         when(problemService.getProblemDetailsById(problemId))
                 .thenThrow(new ProblemNotFoundException("Problem not found with id: " + problemId));
 
-        mockMvc.perform(get("/api/problem/{id}", problemId)).andExpect(status().isNotFound());
+        mockMvc.perform(get("/api/v1/problems/{id}", problemId)).andExpect(status().isNotFound());
     }
 
     private ProblemSummaryUi createProblemSummaryUi(Long id) {

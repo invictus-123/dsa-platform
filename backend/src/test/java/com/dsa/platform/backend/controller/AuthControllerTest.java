@@ -6,9 +6,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.util.ArrayList;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +21,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
 import com.dsa.platform.backend.dto.request.LoginRequest;
 import com.dsa.platform.backend.dto.request.RegisterRequest;
 import com.dsa.platform.backend.dto.response.AuthResponse;
@@ -58,12 +55,8 @@ class AuthControllerTest {
 
     @Test
     void registerUser_whenValidRequest_shouldReturnSuccessMessage() throws Exception {
-        RegisterRequest registerRequest = new RegisterRequest(
-			"testuser", 
-			"test@example.com", 
-			"password123", 
-			"Test", 
-			"User");
+        RegisterRequest registerRequest =
+                new RegisterRequest("testuser", "test@example.com", "password123", "Test", "User");
         when(userService.registerUser(registerRequest)).thenReturn(new User());
 
         ResponseEntity<String> response = authController.registerUser(registerRequest);
@@ -71,9 +64,8 @@ class AuthControllerTest {
         assertEquals(200, response.getStatusCode().value());
         assertEquals("User registered successfully", response.getBody());
 
-        mockMvc.perform(post("/api/auth/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(registerRequest)))
+        mockMvc.perform(post("/api/v1/auth/register").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(registerRequest)))
                 .andExpect(status().isOk());
     }
 
@@ -81,8 +73,11 @@ class AuthControllerTest {
     void loginUser_whenValidCredentials_shouldReturnAuthToken() throws Exception {
         LoginRequest loginRequest = new LoginRequest("testuser", "password123");
         String dummyToken = "dummy-jwt-token";
-        org.springframework.security.core.userdetails.User userDetails = new org.springframework.security.core.userdetails.User(loginRequest.handle(), loginRequest.password(), new ArrayList<>());
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        org.springframework.security.core.userdetails.User userDetails =
+                new org.springframework.security.core.userdetails.User(loginRequest.handle(),
+                        loginRequest.password(), new ArrayList<>());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
+                userDetails.getAuthorities());
         when(authenticationManager.authenticate(any())).thenReturn(authentication);
         when(jwtUtil.generateToken(any())).thenReturn(dummyToken);
 
@@ -90,17 +85,16 @@ class AuthControllerTest {
         assertEquals(200, response.getStatusCode().value());
         assertEquals(dummyToken, response.getBody().token());
 
-        mockMvc.perform(post("/api/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequest)))
-                .andExpect(status().isOk())
+        mockMvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginRequest))).andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").value(dummyToken));
     }
 
     @Test
     void loginUser_whenInvalidCredentials_shouldThrowException() {
         LoginRequest loginRequest = new LoginRequest("wronguser", "wrongpassword");
-        when(authenticationManager.authenticate(any())).thenThrow(new BadCredentialsException("Bad credentials"));
+        when(authenticationManager.authenticate(any()))
+                .thenThrow(new BadCredentialsException("Bad credentials"));
 
         try {
             authController.loginUser(loginRequest);
