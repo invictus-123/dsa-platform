@@ -23,6 +23,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -104,5 +106,15 @@ class AuthControllerTest {
 		} catch (BadCredentialsException e) {
 			assertEquals("Bad credentials", e.getMessage());
 		}
+	}
+
+	@Test
+	void logoutUser_shouldReturnSuccessMessage() throws Exception {
+		ResponseEntity<String> response =
+				authController.logoutUser(new MockHttpServletRequest(), new MockHttpServletResponse());
+
+		assertEquals(200, response.getStatusCode().value());
+		assertEquals("User logged out successfully", response.getBody());
+		mockMvc.perform(post("/api/v1/auth/logout")).andExpect(status().isOk());
 	}
 }

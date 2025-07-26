@@ -5,6 +5,8 @@ import com.dsa.platform.backend.dto.request.RegisterRequest;
 import com.dsa.platform.backend.dto.response.AuthResponse;
 import com.dsa.platform.backend.service.UserService;
 import com.dsa.platform.backend.util.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,5 +57,17 @@ public class AuthController {
 
 		logger.info("User authenticated successfully with handle: {}", loginRequest.handle());
 		return ResponseEntity.ok(new AuthResponse(token));
+	}
+
+	@PostMapping("/logout")
+	public ResponseEntity<String> logoutUser(HttpServletRequest request, HttpServletResponse response) {
+		logger.info("Received request to log out user");
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null) {
+			logger.info("Logging out user: {}", auth.getName());
+			new SecurityContextLogoutHandler().logout(request, response, auth);
+		}
+		return ResponseEntity.ok("User logged out successfully");
 	}
 }
