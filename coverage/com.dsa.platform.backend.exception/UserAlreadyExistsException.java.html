@@ -4,12 +4,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Custom exception for handling registration attempts with existing credentials.
+ * Custom exception for handling registration attempts with existing
+ * credentials.
  */
 @ResponseStatus(HttpStatus.CONFLICT)
 public class UserAlreadyExistsException extends RuntimeException {
-    public UserAlreadyExistsException(String message) {
-<span class="fc" id="L12">        super(message);</span>
-<span class="fc" id="L13">    }</span>
+	public UserAlreadyExistsException(String message) {
+<span class="fc" id="L13">		super(message);</span>
+<span class="fc" id="L14">	}</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

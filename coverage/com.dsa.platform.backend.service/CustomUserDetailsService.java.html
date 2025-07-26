@@ -8,16 +8,17 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-    private final UserRepository userRepository;
+	private final UserRepository userRepository;
 
-<span class="fc" id="L13">    public CustomUserDetailsService(UserRepository userRepository) {</span>
-<span class="fc" id="L14">        this.userRepository = userRepository;</span>
-<span class="fc" id="L15">    }</span>
+<span class="fc" id="L13">	public CustomUserDetailsService(UserRepository userRepository) {</span>
+<span class="fc" id="L14">		this.userRepository = userRepository;</span>
+<span class="fc" id="L15">	}</span>
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-<span class="fc" id="L19">        return userRepository.findByHandle(username)</span>
-<span class="fc" id="L20">                .orElseThrow(() -&gt; new UsernameNotFoundException(&quot;User not found with handle: &quot; + username));</span>
-    }
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+<span class="fc" id="L19">		return userRepository</span>
+<span class="fc" id="L20">				.findByHandle(username)</span>
+<span class="fc" id="L21">				.orElseThrow(() -&gt; new UsernameNotFoundException(&quot;User not found with handle: &quot; + username));</span>
+	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
