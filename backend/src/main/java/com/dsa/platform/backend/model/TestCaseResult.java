@@ -2,7 +2,6 @@ package com.dsa.platform.backend.model;
 
 import com.dsa.platform.backend.model.shared.SubmissionStatus;
 import com.dsa.platform.backend.model.shared.TestCaseResultId;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -19,8 +18,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Represents the 'test_case_results' table in the database.    
- * Each row links a submission and a test case with the result.
+ * Represents the 'test_case_results' table in the database. Each row links a
+ * submission and a test case with the result.
  */
 @Data
 @NoArgsConstructor
@@ -29,35 +28,35 @@ import lombok.NoArgsConstructor;
 @Table(name = "test_case_results")
 public class TestCaseResult {
 
-    @EmbeddedId
-    private TestCaseResultId id;
+	@EmbeddedId
+	private TestCaseResultId id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("submissionId")
-    @JoinColumn(name = "submission_id", nullable = false)
-    private Submission submission;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@MapsId("submissionId")
+	@JoinColumn(name = "submission_id", nullable = false)
+	private Submission submission;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("testCaseId")
-    @JoinColumn(name = "test_case_id", nullable = false)
-    private TestCase testCase;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@MapsId("testCaseId")
+	@JoinColumn(name = "test_case_id", nullable = false)
+	private TestCase testCase;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "verdict", nullable = false)
-    private SubmissionStatus verdict;
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	@Column(name = "verdict", nullable = false)
+	private SubmissionStatus verdict;
 
-    @Column(name = "user_output", columnDefinition = "TEXT")
-    private String userOutput;
+	@Column(name = "user_output", columnDefinition = "TEXT")
+	private String userOutput;
 
-    @Column(name = "checker_log", columnDefinition = "TEXT")
-    private String checkerLog;
+	@Column(name = "checker_log", columnDefinition = "TEXT")
+	private String checkerLog;
 
-    @Column(name = "execution_time_seconds", precision = 2)
-    private Double executionTimeSeconds;
+	@Column(name = "execution_time_seconds", precision = 2)
+	private Double executionTimeSeconds;
 
-    @Column(name = "memory_used_mb", precision = 2)
-    private Double memoryUsedMb;
+	@Column(name = "memory_used_mb", precision = 2)
+	private Double memoryUsedMb;
 }
 
 // TestCaseResultId moved to its own file for clarity and maintainability.
