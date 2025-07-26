@@ -33,7 +33,7 @@ public class ProblemService {
     }
 
     /**
-     * Retrieves a paginated list of all problems.
+     * Retrieves a paginated list of all problems, sorted by creation date in descending order.
      *
      * @param page The page number (1-based).
      * @return A List<ProblemSummaryUi> containing the paginated list of problems.
