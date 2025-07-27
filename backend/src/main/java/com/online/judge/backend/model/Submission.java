@@ -10,26 +10,30 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
+import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 /**
- * Represents the 'submissions' table in the database. Each submission is
- * associated with a user and a problem.
+ * Represents the 'submissions' table in the database. Each submission is associated with a user and
+ * a problem.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "submissions")
+@Table(
+		name = "submissions",
+		indexes = {@Index(name = "idx_submission_submitted_at", columnList = "submittedAt")})
 public class Submission {
 
 	/** The primary key for the submissions table. */
@@ -47,11 +51,11 @@ public class Submission {
 	@JoinColumn(name = "problem_id", nullable = false)
 	private Problem problem;
 
-	/** The time of submission, in seconds since epoch. */
+	/** The timestamp when the code was submitted. */
 	@PastOrPresent
 	@CreationTimestamp
-	@Column(name = "submission_time_seconds", nullable = false)
-	private Long submissionTimeSeconds;
+	@Column(name = "submitted_at", nullable = false, updatable = false)
+	private Instant submittedAt;
 
 	/** The status of the submission. */
 	@NotNull
@@ -76,5 +80,5 @@ public class Submission {
 
 	/** The memory used in MB (nullable, only set after execution). */
 	@Column(name = "memory_used_mb")
-	private Double memoryUsedMb;
+	private Integer memoryUsedMb;
 }
