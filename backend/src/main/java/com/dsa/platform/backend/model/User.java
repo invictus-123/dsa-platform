@@ -30,8 +30,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
- * Represents the 'users' table in the database. This class is a JPA entity that
- * maps to user data.
+ * Represents the 'users' table in the database. This class is a JPA entity that maps to user data.
  */
 @Data
 @NoArgsConstructor
@@ -62,9 +61,18 @@ public class User implements UserDetails {
 	@Column(name = "last_name", nullable = false)
 	private String lastName;
 
-	/** The user's unique public handle. */
+	/**
+	 * The user's unique public handle. The handle must
+	 * <ul>
+	 *   <li>Only contain lowercase or uppercase letters, digits, underscores, or hyphens</li>
+	 *   <li>Start with a letter</li>
+	 *   <li>End with a letter or digit</li>
+	 *   <li>Be between 1 and 20 characters long</li>
+	 *   <li>Not contain consecutive underscores or hyphens</li>
+	 * </ul>
+	 */
 	@NotBlank
-	@Pattern(regexp = "^[a-zA-Z]\\w{2,20}$")
+	@Pattern(regexp = "^(?!.*[-_]{2})(?!.*[-_]$)[a-zA-Z][a-zA-Z0-9_-]{0,19}$")
 	@Column(name = "handle", nullable = false, unique = true)
 	private String handle;
 
@@ -75,8 +83,7 @@ public class User implements UserDetails {
 	private String email;
 
 	/**
-	 * The securely hashed password for the user. We never store plain-text
-	 * passwords.
+	 * The securely hashed password for the user. We never store plain-text passwords.
 	 */
 	@JsonIgnore // Exclude from JSON serialization to protect sensitive data
 	@NotBlank
@@ -84,8 +91,7 @@ public class User implements UserDetails {
 	private String passwordHash;
 
 	/**
-	 * The role of the user, which determines their permissions (e.g., 'USER' or
-	 * 'ADMIN').
+	 * The role of the user, which determines their permissions (e.g., 'USER' or 'ADMIN').
 	 */
 	@NotNull
 	@Enumerated(EnumType.STRING)
@@ -93,8 +99,8 @@ public class User implements UserDetails {
 	private UserRole role;
 
 	/**
-	 * The timestamp of when the user account was created. This field is
-	 * automatically set when the user is created and is not updated.
+	 * The timestamp of when the user account was created. This field is automatically set when the
+	 * user is created and is not updated.
 	 */
 	@PastOrPresent
 	@CreationTimestamp
