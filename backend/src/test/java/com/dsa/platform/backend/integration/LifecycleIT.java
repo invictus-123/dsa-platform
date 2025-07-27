@@ -172,7 +172,7 @@ class LifecycleIT {
 		// 50 is the page size
 		assertThat(problems).isNotNull().hasSize(50);
 
-		listResponse = restTemplate.getForEntity(BASE_URL + "/problems?page=2", ListProblemsResponse.class);
+		listResponse = restTemplate.getForEntity(BASE_URL + "/problems/list?page=2", ListProblemsResponse.class);
 
 		assertThat(listResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 		problems = listResponse.getBody().problems();
