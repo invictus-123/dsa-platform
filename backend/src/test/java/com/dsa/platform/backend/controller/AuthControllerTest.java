@@ -11,6 +11,7 @@ import com.dsa.platform.backend.dto.request.LoginRequest;
 import com.dsa.platform.backend.dto.request.RegisterRequest;
 import com.dsa.platform.backend.dto.response.AuthResponse;
 import com.dsa.platform.backend.model.User;
+import com.dsa.platform.backend.model.shared.UserRole;
 import com.dsa.platform.backend.service.UserService;
 import com.dsa.platform.backend.util.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -59,7 +60,7 @@ class AuthControllerTest {
 	@Test
 	void registerUser_whenValidRequest_shouldReturnSuccessMessage() throws Exception {
 		RegisterRequest registerRequest =
-				new RegisterRequest("testuser", "test@example.com", "password123", "Test", "User");
+				new RegisterRequest("testuser", "test@example.com", "password123", "Test", "User", UserRole.USER);
 		when(userService.registerUser(registerRequest)).thenReturn(new User());
 
 		ResponseEntity<String> response = authController.registerUser(registerRequest);

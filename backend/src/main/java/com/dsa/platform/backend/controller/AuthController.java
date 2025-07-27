@@ -39,7 +39,10 @@ public class AuthController {
 
 	@PostMapping("/register")
 	public ResponseEntity<String> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
-		logger.info("Received registration request for user: {}", registerRequest.handle());
+		logger.info(
+				"Received registration request for user: {} with role: {}",
+				registerRequest.handle(),
+				registerRequest.userRole());
 
 		userService.registerUser(registerRequest);
 		return ResponseEntity.ok("User registered successfully");

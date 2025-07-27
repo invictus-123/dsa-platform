@@ -41,7 +41,8 @@ class UserServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		registerRequest = new RegisterRequest("testuser", "test@example.com", "password123", "Test", "User");
+		registerRequest =
+				new RegisterRequest("testuser", "test@example.com", "password123", "Test", "User", UserRole.USER);
 	}
 
 	@Test
