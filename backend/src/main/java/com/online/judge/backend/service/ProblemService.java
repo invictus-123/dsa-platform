@@ -2,18 +2,15 @@ package com.online.judge.backend.service;
 
 import static com.online.judge.backend.converter.ProblemConverter.toProblemDetailsUi;
 import static com.online.judge.backend.converter.ProblemConverter.toProblemFromCreateProblemRequest;
-import static com.online.judge.backend.converter.ProblemConverter.toProblemSummaryUi;
 
+import com.online.judge.backend.converter.ProblemConverter;
 import com.online.judge.backend.dto.request.CreateProblemRequest;
 import com.online.judge.backend.dto.ui.ProblemDetailsUi;
 import com.online.judge.backend.dto.ui.ProblemSummaryUi;
 import com.online.judge.backend.exception.ProblemNotFoundException;
 import com.online.judge.backend.exception.UserNotAuthorizedException;
 import com.online.judge.backend.model.Problem;
-import com.online.judge.backend.model.Tag;
-import com.online.judge.backend.model.TestCase;
 import com.online.judge.backend.model.User;
-import com.online.judge.backend.model.shared.ProblemTag;
 import com.online.judge.backend.model.shared.UserRole;
 import com.online.judge.backend.repository.ProblemRepository;
 import com.online.judge.backend.util.UserUtil;
@@ -60,7 +57,7 @@ public class ProblemService {
 		Pageable pageable =
 				PageRequest.of(page - 1, pageSize, Sort.by("createdAt").descending());
 		return problemRepository.findAll(pageable).getContent().stream()
-				.map(problem -> toProblemSummaryUi(problem, listTags(problem.getTags())))
+				.map(ProblemConverter::toProblemSummaryUi)
 				.toList();
 	}
 
@@ -81,8 +78,7 @@ public class ProblemService {
 				.findById(problemId)
 				.map(problem -> {
 					logger.info("Problem found: {}", problem);
-					return toProblemDetailsUi(
-							problem, listTags(problem.getTags()), listSampleTestCases(problem.getTestCases()));
+					return toProblemDetailsUi(problem);
 				})
 				.orElseThrow(() -> {
 					logger.error("Problem with ID {} not found", problemId);
@@ -112,29 +108,6 @@ public class ProblemService {
 		problem.setCreatedBy(authenticatedUser);
 		Problem savedProblem = problemRepository.save(problem);
 		logger.info("Problem created with ID: {} by user: {}", savedProblem.getId(), authenticatedUser.getHandle());
-		return toProblemDetailsUi(
-				savedProblem, listTags(savedProblem.getTags()), listSampleTestCases(savedProblem.getTestCases()));
-	}
-
-	/**
-	 * Lists the tags associated with a problem.
-	 *
-	 * @param tags
-	 *            The list of tag entities associated with the problem.
-	 * @return A list of ProblemTag objects.
-	 */
-	private List<ProblemTag> listTags(List<Tag> tags) {
-		return tags.stream().map(Tag::getTagName).toList();
-	}
-
-	/**
-	 * Lists the sample test cases associated with a problem.
-	 *
-	 * @param testCases
-	 *            The list of test case entities associated with the problem.
-	 * @return A list of sample TestCase objects.
-	 */
-	private List<TestCase> listSampleTestCases(List<TestCase> testCases) {
-		return testCases.stream().filter(TestCase::getIsSample).toList();
+		return toProblemDetailsUi(savedProblem);
 	}
 }

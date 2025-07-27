@@ -3,6 +3,8 @@ package com.online.judge.backend.service;
 import static com.online.judge.backend.factory.ProblemFactory.createProblem;
 import static com.online.judge.backend.factory.TagFactory.createTag;
 import static com.online.judge.backend.factory.TestCaseFactory.createTestCase;
+import static com.online.judge.backend.factory.UiFactory.createProblemDetailsUi;
+import static com.online.judge.backend.factory.UiFactory.createTestCaseUi;
 import static com.online.judge.backend.factory.UserFactory.createUser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -17,11 +19,9 @@ import com.online.judge.backend.dto.request.CreateProblemRequest;
 import com.online.judge.backend.dto.request.CreateTestCaseRequest;
 import com.online.judge.backend.dto.ui.ProblemDetailsUi;
 import com.online.judge.backend.dto.ui.ProblemSummaryUi;
-import com.online.judge.backend.dto.ui.TestCaseUi;
 import com.online.judge.backend.exception.ProblemNotFoundException;
 import com.online.judge.backend.exception.UserNotAuthorizedException;
 import com.online.judge.backend.model.Problem;
-import com.online.judge.backend.model.Tag;
 import com.online.judge.backend.model.TestCase;
 import com.online.judge.backend.model.User;
 import com.online.judge.backend.model.shared.ProblemDifficulty;
@@ -143,7 +143,7 @@ class ProblemServiceTest {
 				MEMORY_LIMIT,
 				PROBLEM_TAGS,
 				List.of(new CreateTestCaseRequest(
-						"Input 1", "Output 1", /*isSample=*/ false, /* explanation= */ null)));
+						"Test1 Input", "Test1 Output", /*isSample=*/ true, "Test1 Explanation")));
 		Problem problem = createProblemFromRequest(request);
 		problem.setCreatedBy(adminUser);
 		when(problemRepository.save(any(Problem.class))).thenReturn(problem);
@@ -205,24 +205,5 @@ class ProblemServiceTest {
 						testCaseRequest.explanation()))
 				.toList());
 		return problem;
-	}
-
-	private ProblemDetailsUi createProblemDetailsUi(Problem problem) {
-		return new ProblemDetailsUi(
-				problem.getId(),
-				problem.getTitle(),
-				problem.getStatement(),
-				problem.getTimeLimitSecond(),
-				problem.getMemoryLimitMb(),
-				problem.getDifficulty(),
-				problem.getTags().stream().map(Tag::getTagName).toList(),
-				problem.getTestCases().stream()
-						.filter(TestCase::getIsSample)
-						.map(this::createTestCaseUi)
-						.toList());
-	}
-
-	private TestCaseUi createTestCaseUi(TestCase testCase) {
-		return new TestCaseUi(testCase.getInput(), testCase.getOutput(), testCase.getExplanation());
 	}
 }

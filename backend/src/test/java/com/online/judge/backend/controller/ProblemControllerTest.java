@@ -1,5 +1,8 @@
 package com.online.judge.backend.controller;
 
+import static com.online.judge.backend.factory.ProblemFactory.createProblem;
+import static com.online.judge.backend.factory.UiFactory.createProblemDetailsUi;
+import static com.online.judge.backend.factory.UiFactory.createProblemSummaryUi;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -15,8 +18,8 @@ import com.online.judge.backend.dto.response.GetProblemByIdResponse;
 import com.online.judge.backend.dto.response.ListProblemsResponse;
 import com.online.judge.backend.dto.ui.ProblemDetailsUi;
 import com.online.judge.backend.dto.ui.ProblemSummaryUi;
-import com.online.judge.backend.dto.ui.TestCaseUi;
 import com.online.judge.backend.exception.ProblemNotFoundException;
+import com.online.judge.backend.model.Problem;
 import com.online.judge.backend.model.shared.ProblemDifficulty;
 import com.online.judge.backend.model.shared.ProblemTag;
 import com.online.judge.backend.service.ProblemService;
@@ -55,7 +58,7 @@ class ProblemControllerTest {
 		int page = 1;
 		List<Long> problemIds = List.of(1L, 2L);
 		List<ProblemSummaryUi> problemSummaries =
-				problemIds.stream().map(this::createProblemSummaryUi).toList();
+				problemIds.stream().map(this::createProblemSummaryUiWithId).toList();
 		when(problemService.listProblems(page)).thenReturn(problemSummaries);
 		ListProblemsResponse expectedResponse = new ListProblemsResponse(problemSummaries);
 
@@ -74,7 +77,7 @@ class ProblemControllerTest {
 		int page = 5;
 		List<Long> problemIds = List.of(1L, 2L);
 		List<ProblemSummaryUi> problemSummaries =
-				problemIds.stream().map(this::createProblemSummaryUi).toList();
+				problemIds.stream().map(this::createProblemSummaryUiWithId).toList();
 		when(problemService.listProblems(page)).thenReturn(problemSummaries);
 		ListProblemsResponse expectedResponse = new ListProblemsResponse(problemSummaries);
 
@@ -91,7 +94,7 @@ class ProblemControllerTest {
 	@Test
 	void getProblemById_whenProblemExists_returnsProblemDetails() throws Exception {
 		Long problemId = 1L;
-		ProblemDetailsUi problemDetailsUi = createProblemDetailsUi(problemId);
+		ProblemDetailsUi problemDetailsUi = createProblemDetailsUiWithId(problemId);
 		GetProblemByIdResponse expectedResponse = new GetProblemByIdResponse(problemDetailsUi);
 		when(problemService.getProblemDetailsById(problemId)).thenReturn(problemDetailsUi);
 
@@ -124,7 +127,7 @@ class ProblemControllerTest {
 				256,
 				List.of(ProblemTag.ARRAY),
 				List.of(new CreateTestCaseRequest("Sample input", "Sample output", false, "Explanation")));
-		ProblemDetailsUi problemDetailsUi = createProblemDetailsUi(1L);
+		ProblemDetailsUi problemDetailsUi = createProblemDetailsUiWithId(1L);
 		when(problemService.createProblem(request)).thenReturn(problemDetailsUi);
 		CreateProblemResponse expectedResponse = new CreateProblemResponse(problemDetailsUi);
 
@@ -140,19 +143,15 @@ class ProblemControllerTest {
 				.andExpect(content().json(objectMapper.writeValueAsString(expectedResponse)));
 	}
 
-	private ProblemSummaryUi createProblemSummaryUi(Long id) {
-		return new ProblemSummaryUi(id, "Title", ProblemDifficulty.EASY, List.of(ProblemTag.ARRAY));
+	private ProblemDetailsUi createProblemDetailsUiWithId(Long id) {
+		Problem problem = createProblem();
+		problem.setId(id);
+		return createProblemDetailsUi(problem);
 	}
 
-	private ProblemDetailsUi createProblemDetailsUi(Long id) {
-		return new ProblemDetailsUi(
-				id,
-				"Title",
-				"Statement",
-				/* timeLimitInSecond= */ 2.0,
-				/* memoryLimitInMb= */ 256,
-				ProblemDifficulty.EASY,
-				List.of(ProblemTag.ARRAY),
-				List.of(new TestCaseUi("Sample input", "Sample output", "Explanation")));
+	private ProblemSummaryUi createProblemSummaryUiWithId(Long id) {
+		Problem problem = createProblem();
+		problem.setId(id);
+		return createProblemSummaryUi(problem);
 	}
 }

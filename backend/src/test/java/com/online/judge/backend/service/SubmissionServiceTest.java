@@ -1,19 +1,16 @@
 package com.online.judge.backend.service;
 
 import static com.online.judge.backend.factory.SubmissionFactory.createSubmission;
+import static com.online.judge.backend.factory.UiFactory.createSubmissionDetailsUi;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-import com.online.judge.backend.dto.ui.ProblemSummaryUi;
 import com.online.judge.backend.dto.ui.SubmissionDetailsUi;
 import com.online.judge.backend.dto.ui.SubmissionSummaryUi;
-import com.online.judge.backend.dto.ui.UserSummaryUi;
 import com.online.judge.backend.exception.SubmissionNotFoundException;
-import com.online.judge.backend.model.Problem;
 import com.online.judge.backend.model.Submission;
-import com.online.judge.backend.model.User;
 import com.online.judge.backend.repository.SubmissionRepository;
 import java.util.List;
 import java.util.Optional;
@@ -62,17 +59,7 @@ class SubmissionServiceTest {
 		Long submissionId = 10L;
 		Submission submission = createSubmissionWithId(submissionId);
 		when(submissionRepository.findById(submissionId)).thenReturn(Optional.of(submission));
-		SubmissionDetailsUi expectedSubmmissionDetails = new SubmissionDetailsUi(
-				submission.getId(),
-				createProblemSummaryUi(submission.getProblem()),
-				createUserSummaryUi(submission.getUser()),
-				submission.getStatus(),
-				submission.getLanguage(),
-				submission.getSubmittedAt(),
-				submission.getCode(),
-				submission.getExecutionTimeSeconds(),
-				submission.getMemoryUsedMb(),
-				List.of());
+		SubmissionDetailsUi expectedSubmmissionDetails = createSubmissionDetailsUi(submission);
 
 		SubmissionDetailsUi result = submissionService.getSubmissionDetailsById(submissionId);
 
@@ -96,13 +83,5 @@ class SubmissionServiceTest {
 		Submission submission = createSubmission();
 		submission.setId(submissionId);
 		return submission;
-	}
-
-	private ProblemSummaryUi createProblemSummaryUi(Problem problem) {
-		return new ProblemSummaryUi(problem.getId(), problem.getTitle(), problem.getDifficulty(), List.of());
-	}
-
-	private UserSummaryUi createUserSummaryUi(User user) {
-		return new UserSummaryUi(user.getHandle());
 	}
 }
