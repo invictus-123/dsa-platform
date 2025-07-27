@@ -18,14 +18,14 @@ public class UserUtil {
 	 *                    not an instance of User.
 	 */
 	public User getCurrentAuthenticatedUser() {
-<span class="nc" id="L21">		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span>
-<span class="nc bnc" id="L22" title="All 4 branches missed.">		if (authentication == null || !authentication.isAuthenticated()) {</span>
+<span class="fc" id="L21">		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span>
+<span class="pc bpc" id="L22" title="2 of 4 branches missed.">		if (authentication == null || !authentication.isAuthenticated()) {</span>
 <span class="nc" id="L23">			throw new UserNotAuthorizedException(&quot;No authenticated user found in security context.&quot;);</span>
 		}
 
-<span class="nc" id="L26">		Object principal = authentication.getPrincipal();</span>
-<span class="nc bnc" id="L27" title="All 2 branches missed.">		if (principal instanceof User authenticatedUser) {</span>
-<span class="nc" id="L28">			return authenticatedUser;</span>
+<span class="fc" id="L26">		Object principal = authentication.getPrincipal();</span>
+<span class="pc bpc" id="L27" title="1 of 2 branches missed.">		if (principal instanceof User authenticatedUser) {</span>
+<span class="fc" id="L28">			return authenticatedUser;</span>
 		} else {
 <span class="nc" id="L30">			throw new UserNotAuthorizedException(&quot;The authenticated principal is not an instance of the User class.&quot;);</span>
 		}
