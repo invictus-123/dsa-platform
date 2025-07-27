@@ -1,6 +1,20 @@
 package com.online.judge.backend.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import com.online.judge.backend.dto.request.CreateProblemRequest;
+import com.online.judge.backend.dto.request.CreateTestCaseRequest;
+import com.online.judge.backend.dto.request.LoginRequest;
+import com.online.judge.backend.dto.request.RegisterRequest;
+import com.online.judge.backend.dto.response.AuthResponse;
+import com.online.judge.backend.dto.response.CreateProblemResponse;
+import com.online.judge.backend.dto.response.GetProblemByIdResponse;
+import com.online.judge.backend.dto.response.ListProblemsResponse;
+import com.online.judge.backend.dto.ui.ProblemDetailsUi;
+import com.online.judge.backend.dto.ui.ProblemSummaryUi;
+import com.online.judge.backend.model.shared.ProblemDifficulty;
+import com.online.judge.backend.model.shared.ProblemTag;
+import com.online.judge.backend.model.shared.UserRole;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.MethodOrderer;
@@ -20,19 +34,6 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import com.online.judge.backend.dto.request.CreateProblemRequest;
-import com.online.judge.backend.dto.request.CreateTestCaseRequest;
-import com.online.judge.backend.dto.request.LoginRequest;
-import com.online.judge.backend.dto.request.RegisterRequest;
-import com.online.judge.backend.dto.response.AuthResponse;
-import com.online.judge.backend.dto.response.CreateProblemResponse;
-import com.online.judge.backend.dto.response.GetProblemByIdResponse;
-import com.online.judge.backend.dto.response.ListProblemsResponse;
-import com.online.judge.backend.dto.ui.ProblemDetailsUi;
-import com.online.judge.backend.dto.ui.ProblemSummaryUi;
-import com.online.judge.backend.model.shared.ProblemDifficulty;
-import com.online.judge.backend.model.shared.ProblemTag;
-import com.online.judge.backend.model.shared.UserRole;
 
 /**
  * Integration test for user and problem-related API flows. Uses Testcontainers to spin up a real

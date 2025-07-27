@@ -6,8 +6,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.online.judge.backend.controller.AuthController;
 import com.online.judge.backend.dto.request.LoginRequest;
 import com.online.judge.backend.dto.request.RegisterRequest;
 import com.online.judge.backend.dto.response.AuthResponse;

@@ -1,10 +1,10 @@
 package com.online.judge.backend.repository;
 
+import com.online.judge.backend.model.User;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import com.online.judge.backend.model.User;
 
 /** Spring Data JPA repository for the {@link User} entity. */
 @Repository

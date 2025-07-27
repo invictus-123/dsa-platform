@@ -1,5 +1,7 @@
 package com.online.judge.backend.model;
 
+import com.online.judge.backend.model.shared.SubmissionLanguage;
+import com.online.judge.backend.model.shared.SubmissionStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -18,8 +20,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import com.online.judge.backend.model.shared.SubmissionLanguage;
-import com.online.judge.backend.model.shared.SubmissionStatus;
 
 /**
  * Represents the 'submissions' table in the database. Each submission is

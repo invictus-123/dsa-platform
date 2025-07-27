@@ -1,10 +1,10 @@
 package com.online.judge.backend.util;
 
+import com.online.judge.backend.exception.UserNotAuthorizedException;
+import com.online.judge.backend.model.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import com.online.judge.backend.exception.UserNotAuthorizedException;
-import com.online.judge.backend.model.User;
 
 @Component
 public class UserUtil {

@@ -1,5 +1,10 @@
 package com.online.judge.backend.controller;
 
+import com.online.judge.backend.dto.request.LoginRequest;
+import com.online.judge.backend.dto.request.RegisterRequest;
+import com.online.judge.backend.dto.response.AuthResponse;
+import com.online.judge.backend.service.UserService;
+import com.online.judge.backend.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -16,11 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.online.judge.backend.dto.request.LoginRequest;
-import com.online.judge.backend.dto.request.RegisterRequest;
-import com.online.judge.backend.dto.response.AuthResponse;
-import com.online.judge.backend.service.UserService;
-import com.online.judge.backend.util.JwtUtil;
 
 @RestController
 @RequestMapping("/api/v1/auth")

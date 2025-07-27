@@ -5,6 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
+
+import com.online.judge.backend.model.User;
+import com.online.judge.backend.model.shared.UserRole;
+import com.online.judge.backend.repository.UserRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,10 +17,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import com.online.judge.backend.model.User;
-import com.online.judge.backend.model.shared.UserRole;
-import com.online.judge.backend.repository.UserRepository;
-import com.online.judge.backend.service.CustomUserDetailsService;
 
 @ExtendWith(MockitoExtension.class)
 class CustomUserDetailsServiceTest {

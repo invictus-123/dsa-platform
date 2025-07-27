@@ -9,6 +9,12 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import com.online.judge.backend.dto.request.RegisterRequest;
+import com.online.judge.backend.exception.UserAlreadyExistsException;
+import com.online.judge.backend.model.User;
+import com.online.judge.backend.model.shared.UserRole;
+import com.online.judge.backend.repository.UserRepository;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,12 +25,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import com.online.judge.backend.dto.request.RegisterRequest;
-import com.online.judge.backend.exception.UserAlreadyExistsException;
-import com.online.judge.backend.model.User;
-import com.online.judge.backend.model.shared.UserRole;
-import com.online.judge.backend.repository.UserRepository;
-import com.online.judge.backend.service.UserService;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {

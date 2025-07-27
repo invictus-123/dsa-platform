@@ -1,5 +1,6 @@
 package com.online.judge.backend.model;
 
+import com.online.judge.backend.model.shared.ProblemDifficulty;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,7 +29,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
-import com.online.judge.backend.model.shared.ProblemDifficulty;
 
 /**
  * Represents the 'problems' table in the database. This class is a JPA entity

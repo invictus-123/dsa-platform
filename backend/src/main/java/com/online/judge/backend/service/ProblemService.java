@@ -3,15 +3,7 @@ package com.online.judge.backend.service;
 import static com.online.judge.backend.converter.ProblemConverter.toProblemDetailsUi;
 import static com.online.judge.backend.converter.ProblemConverter.toProblemFromCreateProblemRequest;
 import static com.online.judge.backend.converter.ProblemConverter.toProblemSummaryUi;
-import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 import com.online.judge.backend.dto.request.CreateProblemRequest;
 import com.online.judge.backend.dto.ui.ProblemDetailsUi;
 import com.online.judge.backend.dto.ui.ProblemSummaryUi;
@@ -25,19 +17,30 @@ import com.online.judge.backend.model.shared.ProblemTag;
 import com.online.judge.backend.model.shared.UserRole;
 import com.online.judge.backend.repository.ProblemRepository;
 import com.online.judge.backend.util.UserUtil;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /** Service class for managing problems. */
 @Service
 public class ProblemService {
 	private static final Logger logger = LoggerFactory.getLogger(ProblemService.class);
 
-	@Value("${problems.list.page-size:50}")
-	private int pageSize;
-
+	private final int pageSize;
 	private final ProblemRepository problemRepository;
 	private final UserUtil userUtil;
 
-	public ProblemService(ProblemRepository problemRepository, UserUtil userUtil) {
+	public ProblemService(
+			@Value("${problems.list.page-size:50}") int pageSize,
+			ProblemRepository problemRepository,
+			UserUtil userUtil) {
+		this.pageSize = pageSize;
 		this.problemRepository = problemRepository;
 		this.userUtil = userUtil;
 	}

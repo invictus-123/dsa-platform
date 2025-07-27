@@ -1,15 +1,16 @@
 package com.online.judge.backend.service;
 
 import static com.online.judge.backend.converter.UserConverter.toUserFromRegisterRequestWithoutPassword;
+
+import com.online.judge.backend.dto.request.RegisterRequest;
+import com.online.judge.backend.exception.UserAlreadyExistsException;
+import com.online.judge.backend.model.User;
+import com.online.judge.backend.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.online.judge.backend.dto.request.RegisterRequest;
-import com.online.judge.backend.exception.UserAlreadyExistsException;
-import com.online.judge.backend.model.User;
-import com.online.judge.backend.repository.UserRepository;
 
 /** Service class for managing users. */
 @Service

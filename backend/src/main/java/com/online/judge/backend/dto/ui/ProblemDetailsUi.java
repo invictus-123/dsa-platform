@@ -1,8 +1,8 @@
 package com.online.judge.backend.dto.ui;
 
-import java.util.List;
 import com.online.judge.backend.model.shared.ProblemDifficulty;
 import com.online.judge.backend.model.shared.ProblemTag;
+import java.util.List;
 
 public record ProblemDetailsUi(
 		Long id,
