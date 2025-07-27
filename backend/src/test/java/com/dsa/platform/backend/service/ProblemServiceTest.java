@@ -27,6 +27,7 @@ import com.dsa.platform.backend.repository.ProblemRepository;
 import com.dsa.platform.backend.util.UserUtil;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -38,10 +39,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class ProblemServiceTest {
-	private static final int PAGE_SIZE = 50;
+	private static final int PAGE_SIZE = 20;
 	private static final String PROBLEM_TITLE = "New Problem";
 	private static final String PROBLEM_STATEMENT = "Statement";
 	private static final double TIME_LIMIT = 1.0;
@@ -57,6 +59,13 @@ class ProblemServiceTest {
 
 	@InjectMocks
 	private ProblemService problemService;
+
+	@BeforeEach
+	void setUp() {
+		// Use ReflectionTestUtils to set the private 'pageSize' field
+		// This simulates the behavior of @Value for this unit test
+		ReflectionTestUtils.setField(problemService, "pageSize", PAGE_SIZE);
+	}
 
 	@Test
 	void listProblems_whenProblemsExist_returnsProblemSummaryList() {
