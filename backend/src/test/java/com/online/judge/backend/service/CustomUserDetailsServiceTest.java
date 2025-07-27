@@ -1,5 +1,6 @@
 package com.online.judge.backend.service;
 
+import static com.online.judge.backend.factory.UserFactory.createUser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -7,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import com.online.judge.backend.model.User;
-import com.online.judge.backend.model.shared.UserRole;
 import com.online.judge.backend.repository.UserRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -30,9 +30,7 @@ class CustomUserDetailsServiceTest {
 	@Test
 	void loadUserByUsername_whenUserExists_shouldReturnUserDetails() {
 		String handle = "testuser";
-		User mockUser = new User();
-		mockUser.setHandle(handle);
-		mockUser.setRole(UserRole.USER);
+		User mockUser = createUser(handle);
 		when(userRepository.findByHandle(handle)).thenReturn(Optional.of(mockUser));
 
 		UserDetails userDetails = customUserDetailsService.loadUserByUsername(handle);

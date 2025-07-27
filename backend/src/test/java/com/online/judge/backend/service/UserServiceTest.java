@@ -46,7 +46,7 @@ class UserServiceTest {
 	}
 
 	@Test
-	void testRegisterUser_Success() {
+	void testRegisterUser_success() {
 		when(userRepository.findByHandle(anyString())).thenReturn(Optional.empty());
 		when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 		when(passwordEncoder.encode(anyString())).thenReturn("hashedPassword123");

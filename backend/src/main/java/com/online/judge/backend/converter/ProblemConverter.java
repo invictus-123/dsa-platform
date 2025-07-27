@@ -14,12 +14,12 @@ import com.online.judge.backend.model.shared.ProblemTag;
 import java.util.List;
 
 public class ProblemConverter {
-	public static ProblemSummaryUi toProblemSummaryUi(Problem problem, List<ProblemTag> tags) {
-		return new ProblemSummaryUi(problem.getId(), problem.getTitle(), problem.getDifficulty(), tags);
+	public static ProblemSummaryUi toProblemSummaryUi(Problem problem) {
+		return new ProblemSummaryUi(
+				problem.getId(), problem.getTitle(), problem.getDifficulty(), listProblemTags(problem));
 	}
 
-	public static ProblemDetailsUi toProblemDetailsUi(
-			Problem problem, List<ProblemTag> tags, List<TestCase> sampleTestCases) {
+	public static ProblemDetailsUi toProblemDetailsUi(Problem problem) {
 		return new ProblemDetailsUi(
 				problem.getId(),
 				problem.getTitle(),
@@ -27,8 +27,8 @@ public class ProblemConverter {
 				problem.getTimeLimitSecond(),
 				problem.getMemoryLimitMb(),
 				problem.getDifficulty(),
-				tags,
-				toTestCaseUi(sampleTestCases));
+				listProblemTags(problem),
+				toTestCaseUi(listSampleTestCases(problem)));
 	}
 
 	public static Problem toProblemFromCreateProblemRequest(CreateProblemRequest request) {
@@ -50,6 +50,14 @@ public class ProblemConverter {
 		problem.setTestCases(testCases);
 
 		return problem;
+	}
+
+	private static List<ProblemTag> listProblemTags(Problem problem) {
+		return problem.getTags().stream().map(Tag::getTagName).toList();
+	}
+
+	private static List<TestCase> listSampleTestCases(Problem problem) {
+		return problem.getTestCases().stream().filter(TestCase::getIsSample).toList();
 	}
 
 	private ProblemConverter() {
