@@ -99,6 +99,7 @@ public class ProblemService {
 
 		User authenticatedUser = userUtil.getCurrentAuthenticatedUser();
 		if (!authenticatedUser.getRole().equals(UserRole.ADMIN)) {
+			logger.warn("User {} is not authorized to create problems", authenticatedUser.getHandle());
 			throw new UserNotAuthorizedException("User is not authorized to create problems.");
 		}
 
