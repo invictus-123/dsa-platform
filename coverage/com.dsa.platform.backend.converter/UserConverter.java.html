@@ -11,7 +11,7 @@ public class UserConverter {
 <span class="fc" id="L11">		user.setEmail(request.email());</span>
 <span class="fc" id="L12">		user.setFirstName(request.firstName());</span>
 <span class="fc" id="L13">		user.setLastName(request.lastName());</span>
-<span class="fc" id="L14">		user.setRole(UserRole.USER); // Default role for new users</span>
+<span class="pc bpc" id="L14" title="1 of 2 branches missed.">		user.setRole(request.userRole() != null ? request.userRole() : UserRole.USER);</span>
 <span class="fc" id="L15">		return user;</span>
 	}
 
