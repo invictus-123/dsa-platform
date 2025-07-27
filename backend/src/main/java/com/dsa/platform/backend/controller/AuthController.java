@@ -38,14 +38,25 @@ public class AuthController {
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<String> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
+	public ResponseEntity<AuthResponse> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
 		logger.info(
 				"Received registration request for user: {} with role: {}",
 				registerRequest.handle(),
 				registerRequest.userRole());
 
 		userService.registerUser(registerRequest);
-		return ResponseEntity.ok("User registered successfully");
+
+		logger.info(
+				"User registered successfully with handle: {}. Authenticating the user...", registerRequest.handle());
+
+		Authentication authentication = authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(registerRequest.handle(), registerRequest.password()));
+
+		final UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		final String token = jwtUtil.generateToken(userDetails);
+
+		logger.info("User authenticated successfully with handle: {}", registerRequest.handle());
+		return ResponseEntity.ok(new AuthResponse(token));
 	}
 
 	@PostMapping("/login")

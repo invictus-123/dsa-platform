@@ -61,17 +61,26 @@ class AuthControllerTest {
 	void registerUser_whenValidRequest_shouldReturnSuccessMessage() throws Exception {
 		RegisterRequest registerRequest =
 				new RegisterRequest("testuser", "test@example.com", "password123", "Test", "User", UserRole.USER);
+		String dummyToken = "dummy-jwt-token";
+		org.springframework.security.core.userdetails.User userDetails =
+				new org.springframework.security.core.userdetails.User(
+						registerRequest.handle(), registerRequest.password(), new ArrayList<>());
 		when(userService.registerUser(registerRequest)).thenReturn(new User());
+		Authentication authentication =
+				new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+		when(authenticationManager.authenticate(any())).thenReturn(authentication);
+		when(jwtUtil.generateToken(any())).thenReturn(dummyToken);
 
-		ResponseEntity<String> response = authController.registerUser(registerRequest);
+		ResponseEntity<AuthResponse> response = authController.registerUser(registerRequest);
 
 		assertEquals(200, response.getStatusCode().value());
-		assertEquals("User registered successfully", response.getBody());
+		assertEquals(dummyToken, response.getBody().token());
 
 		mockMvc.perform(post("/api/v1/auth/register")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(registerRequest)))
-				.andExpect(status().isOk());
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.token").value(dummyToken));
 	}
 
 	@Test
