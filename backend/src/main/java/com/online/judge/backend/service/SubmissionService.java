@@ -14,9 +14,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /** Service class for managing submissions. */
+@Service
 public class SubmissionService {
 	private static final Logger logger = LoggerFactory.getLogger(SubmissionService.class);
 
