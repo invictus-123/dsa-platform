@@ -109,6 +109,6 @@ class LifecycleIT {
 		ResponseEntity<CreateProblemResponse> response =
 				restTemplate.postForEntity(BASE_URL + "/problems", requestEntity, CreateProblemResponse.class);
 
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
 	}
 }
