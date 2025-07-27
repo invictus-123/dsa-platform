@@ -12,7 +12,7 @@ public class SubmissionConverter {
 	public static SubmissionDetailsUi toSubmissionDetailsUi(Submission submission) {
 		return new SubmissionDetailsUi(
 				submission.getId(),
-				toProblemSummaryUi(submission.getProblem(), List.of()),
+				toProblemSummaryUi(submission.getProblem()),
 				toUserSummaryUi(submission.getUser()),
 				submission.getStatus(),
 				submission.getLanguage(),
@@ -26,7 +26,7 @@ public class SubmissionConverter {
 	public static SubmissionSummaryUi toSubmissionSummaryUi(Submission submission) {
 		return new SubmissionSummaryUi(
 				submission.getId(),
-				toProblemSummaryUi(submission.getProblem(), List.of()),
+				toProblemSummaryUi(submission.getProblem()),
 				toUserSummaryUi(submission.getUser()),
 				submission.getStatus(),
 				submission.getLanguage(),

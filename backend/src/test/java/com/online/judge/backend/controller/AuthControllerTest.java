@@ -1,5 +1,6 @@
 package com.online.judge.backend.controller;
 
+import static com.online.judge.backend.factory.UserFactory.createUser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -11,7 +12,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.online.judge.backend.dto.request.LoginRequest;
 import com.online.judge.backend.dto.request.RegisterRequest;
 import com.online.judge.backend.dto.response.AuthResponse;
-import com.online.judge.backend.model.User;
 import com.online.judge.backend.model.shared.UserRole;
 import com.online.judge.backend.service.UserService;
 import com.online.judge.backend.util.JwtUtil;
@@ -65,7 +65,7 @@ class AuthControllerTest {
 		org.springframework.security.core.userdetails.User userDetails =
 				new org.springframework.security.core.userdetails.User(
 						registerRequest.handle(), registerRequest.password(), new ArrayList<>());
-		when(userService.registerUser(registerRequest)).thenReturn(new User());
+		when(userService.registerUser(registerRequest)).thenReturn(createUser());
 		Authentication authentication =
 				new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 		when(authenticationManager.authenticate(any())).thenReturn(authentication);
