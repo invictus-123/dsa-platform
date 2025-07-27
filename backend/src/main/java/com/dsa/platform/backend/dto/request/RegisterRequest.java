@@ -1,5 +1,6 @@
 package com.dsa.platform.backend.dto.request;
 
+import com.dsa.platform.backend.model.shared.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -16,4 +17,5 @@ public record RegisterRequest(
 				@Size(min = 8, message = "Password must be at least 8 characters long")
 				String password,
 		@Pattern(regexp = "^[a-zA-Z]*$", message = "First name must contain only alphabets") String firstName,
-		@Pattern(regexp = "^[a-zA-Z]*$", message = "Last name must contain only alphabets") String lastName) {}
+		@Pattern(regexp = "^[a-zA-Z]*$", message = "Last name must contain only alphabets") String lastName,
+		UserRole userRole) {}

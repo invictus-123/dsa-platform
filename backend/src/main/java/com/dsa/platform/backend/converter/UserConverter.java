@@ -11,7 +11,7 @@ public class UserConverter {
 		user.setEmail(request.email());
 		user.setFirstName(request.firstName());
 		user.setLastName(request.lastName());
-		user.setRole(UserRole.USER); // Default role for new users
+		user.setRole(request.userRole() != null ? request.userRole() : UserRole.USER);
 		return user;
 	}
 
