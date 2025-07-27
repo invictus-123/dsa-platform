@@ -1,4 +1,4 @@
-# DSA Platform
+# Online Judge
 
 A full-stack web application for solving Data Structures and Algorithms (DSA) problems. This platform allows users to practice coding problems, run their code against predefined test cases, and get instant feedback. Admins can manage problem sets and test cases.
 

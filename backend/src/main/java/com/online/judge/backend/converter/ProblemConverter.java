@@ -1,0 +1,57 @@
+package com.online.judge.backend.converter;
+
+import static com.online.judge.backend.converter.TagConverter.toTagFromProblemTag;
+import static com.online.judge.backend.converter.TestCaseConverter.toTestCaseFromCreateTestCaseRequest;
+import static com.online.judge.backend.converter.TestCaseConverter.toTestCaseUi;
+import java.util.List;
+import com.online.judge.backend.dto.request.CreateProblemRequest;
+import com.online.judge.backend.dto.ui.ProblemDetailsUi;
+import com.online.judge.backend.dto.ui.ProblemSummaryUi;
+import com.online.judge.backend.model.Problem;
+import com.online.judge.backend.model.Tag;
+import com.online.judge.backend.model.TestCase;
+import com.online.judge.backend.model.shared.ProblemTag;
+
+public class ProblemConverter {
+	public static ProblemSummaryUi toProblemSummaryUi(Problem problem, List<ProblemTag> tags) {
+		return new ProblemSummaryUi(problem.getId(), problem.getTitle(), problem.getDifficulty(), tags);
+	}
+
+	public static ProblemDetailsUi toProblemDetailsUi(
+			Problem problem, List<ProblemTag> tags, List<TestCase> sampleTestCases) {
+		return new ProblemDetailsUi(
+				problem.getId(),
+				problem.getTitle(),
+				problem.getStatement(),
+				problem.getTimeLimitSecond(),
+				problem.getMemoryLimitMb(),
+				problem.getDifficulty(),
+				tags,
+				toTestCaseUi(sampleTestCases));
+	}
+
+	public static Problem toProblemFromCreateProblemRequest(CreateProblemRequest request) {
+		Problem problem = new Problem();
+		problem.setTitle(request.title());
+		problem.setStatement(request.statement());
+		problem.setDifficulty(request.difficulty());
+		problem.setTimeLimitSecond(request.timeLimit());
+		problem.setMemoryLimitMb(request.memoryLimit());
+
+		List<Tag> tags = request.tags().stream()
+				.map(problemTag -> toTagFromProblemTag(problem, problemTag))
+				.toList();
+		problem.setTags(tags);
+
+		List<TestCase> testCases = request.testCases().stream()
+				.map(tcRequest -> toTestCaseFromCreateTestCaseRequest(problem, tcRequest))
+				.toList();
+		problem.setTestCases(testCases);
+
+		return problem;
+	}
+
+	private ProblemConverter() {
+		// Prevent instantiation
+	}
+}
