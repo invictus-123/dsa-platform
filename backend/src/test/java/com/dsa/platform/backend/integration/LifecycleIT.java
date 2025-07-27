@@ -74,7 +74,7 @@ class LifecycleIT {
 	@Autowired
 	private TestRestTemplate restTemplate;
 
-	private String userToken;
+	private static String userToken;
 
 	@Test
 	@Order(1)
