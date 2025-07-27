@@ -10,6 +10,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -30,7 +31,9 @@ import org.hibernate.annotations.CreationTimestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "submissions")
+@Table(
+		name = "submissions",
+		indexes = {@Index(name = "idx_submission_submitted_at", columnList = "submittedAt")})
 public class Submission {
 
 	/** The primary key for the submissions table. */
@@ -77,5 +80,5 @@ public class Submission {
 
 	/** The memory used in MB (nullable, only set after execution). */
 	@Column(name = "memory_used_mb")
-	private Double memoryUsedMb;
+	private Integer memoryUsedMb;
 }

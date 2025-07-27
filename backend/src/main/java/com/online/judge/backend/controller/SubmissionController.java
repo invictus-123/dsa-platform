@@ -1,5 +1,8 @@
 package com.online.judge.backend.controller;
 
+import com.online.judge.backend.dto.response.GetSubmissionByIdResponse;
+import com.online.judge.backend.dto.response.ListSubmissionsResponse;
+import com.online.judge.backend.service.SubmissionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class SubmissionController {
 	private static final Logger logger = LoggerFactory.getLogger(SubmissionController.class);
 
+	private final SubmissionService submissionService;
+
+	public SubmissionController(SubmissionService submissionService) {
+		this.submissionService = submissionService;
+	}
+
 	/**
 	 * Handles GET requests to fetch a list of all submissions with pagination, sorted by submission
 	 * date in descending order.
@@ -24,10 +33,11 @@ public class SubmissionController {
 	 * @return A ResponseEntity containing a paginated list of submissions.
 	 */
 	@GetMapping("/list")
-	public ResponseEntity<Void> listSubmissions(@RequestParam(defaultValue = "1") int page) {
+	public ResponseEntity<ListSubmissionsResponse> listSubmissions(@RequestParam(defaultValue = "1") int page) {
 		logger.info("Received call to fetch all submissions with pagination: page={}", page);
 
-		return ResponseEntity.ok(null);
+		ListSubmissionsResponse response = new ListSubmissionsResponse(submissionService.listSubmissions(page));
+		return ResponseEntity.ok(response);
 	}
 
 	/**
@@ -38,10 +48,12 @@ public class SubmissionController {
 	 *         status if the submission does not exist.
 	 */
 	@GetMapping("/{id}")
-	public ResponseEntity<Void> getSubmissionById(@PathVariable Long id) {
+	public ResponseEntity<GetSubmissionByIdResponse> getSubmissionById(@PathVariable Long id) {
 		logger.info("Received call to fetch submission with ID {}", id);
 
-		return ResponseEntity.ok(null);
+		GetSubmissionByIdResponse response =
+				new GetSubmissionByIdResponse(submissionService.getSubmissionDetailsById(id));
+		return ResponseEntity.ok(response);
 	}
 
 	/**
@@ -52,7 +64,7 @@ public class SubmissionController {
 	 *         error if the user is not authorized to make a submission.
 	 */
 	@PostMapping
-	public ResponseEntity<Void> createSubmission() {
+	public ResponseEntity<Void> submit() {
 		logger.info("Received request to create a new submission");
 
 		return ResponseEntity.ok(null);

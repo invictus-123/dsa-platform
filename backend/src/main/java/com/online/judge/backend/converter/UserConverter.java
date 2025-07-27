@@ -1,6 +1,7 @@
 package com.online.judge.backend.converter;
 
 import com.online.judge.backend.dto.request.RegisterRequest;
+import com.online.judge.backend.dto.ui.UserSummaryUi;
 import com.online.judge.backend.model.User;
 import com.online.judge.backend.model.shared.UserRole;
 
@@ -13,6 +14,10 @@ public class UserConverter {
 		user.setLastName(request.lastName());
 		user.setRole(request.userRole() != null ? request.userRole() : UserRole.USER);
 		return user;
+	}
+
+	public static UserSummaryUi toUserSummaryUi(User user) {
+		return new UserSummaryUi(user.getHandle());
 	}
 
 	private UserConverter() {
