@@ -107,7 +107,7 @@ class LifecycleIT {
 		headers.setBearerAuth(userToken);
 		HttpEntity<CreateProblemRequest> requestEntity = new HttpEntity<>(CREATE_PROBLEM_REQUEST, headers);
 		ResponseEntity<CreateProblemResponse> response =
-				restTemplate.postForEntity("/api/problems", requestEntity, CreateProblemResponse.class);
+				restTemplate.postForEntity(BASE_URL + "/problems", requestEntity, CreateProblemResponse.class);
 
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
 	}
