@@ -9,11 +9,11 @@
 		<version>3.5.4</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.dsa.platform</groupId>
+	<groupId>com.online.judge</groupId>
 	<artifactId>backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>backend</name>
-	<description>Backend for DSA Platform</description>
+	<description>Backend for Online Judge</description>
 	<url />
 	<licenses>
 		<license />
