@@ -93,8 +93,8 @@ class LifecycleIT {
 		String password = "password123";
 		RegisterRequest userRegisterRequest =
 				new RegisterRequest(userHandle, userEmail, password, "First", "Last", UserRole.USER);
-		ResponseEntity<String> userRegisterResponse =
-				restTemplate.postForEntity(BASE_URL + "/auth/register", userRegisterRequest, String.class);
+		ResponseEntity<AuthResponse> userRegisterResponse =
+				restTemplate.postForEntity(BASE_URL + "/auth/register", userRegisterRequest, AuthResponse.class);
 		assertThat(userRegisterResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 		// 2. Login as the registered USER and retrieve the JWT
@@ -106,23 +106,17 @@ class LifecycleIT {
 		userToken = userLoginResponse.getBody().token();
 		assertThat(userToken).isNotBlank();
 
-		// 3. Register an ADMIN
+		// 3. Register an ADMIN and retrieve the JWT
 		String adminHandle = ("testadmin-" + UUID.randomUUID()).substring(0, 20);
 		String adminEmail = "testadmin-" + UUID.randomUUID() + "@example.com";
 		RegisterRequest adminRegisterRequest =
 				new RegisterRequest(adminHandle, adminEmail, password, "Admin", "User", UserRole.ADMIN);
-		ResponseEntity<String> adminRegisterResponse =
-				restTemplate.postForEntity(BASE_URL + "/auth/register", adminRegisterRequest, String.class);
+		ResponseEntity<AuthResponse> adminRegisterResponse =
+				restTemplate.postForEntity(BASE_URL + "/auth/register", adminRegisterRequest, AuthResponse.class);
 		assertThat(adminRegisterResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-		// 4. Login as the registered ADMIN and retrieve the JWT
-		LoginRequest adminLoginRequest = new LoginRequest(adminHandle, password);
-		ResponseEntity<AuthResponse> adminLoginResponse =
-				restTemplate.postForEntity(BASE_URL + "/auth/login", adminLoginRequest, AuthResponse.class);
-		assertThat(adminLoginResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-		assertThat(adminLoginResponse.getBody()).isNotNull();
-		adminToken = adminLoginResponse.getBody().token();
-		assertThat(adminToken).isNotBlank();
+		assertThat(adminRegisterResponse.getBody()).isNotNull();
+		assertThat(adminRegisterResponse.getBody().token()).isNotBlank();
+		adminToken = adminRegisterResponse.getBody().token();
 	}
 
 	@Test
