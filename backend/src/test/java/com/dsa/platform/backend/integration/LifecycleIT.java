@@ -80,16 +80,16 @@ class LifecycleIT {
 	@Order(1)
 	void userRegistrationAndLogin() {
 		// 1. Register a standard USER
+		String userHandle = ("testuserhandle-" + UUID.randomUUID()).substring(0, 20);
 		String userEmail = "testuser-" + UUID.randomUUID() + "@example.com";
 		String password = "password123";
-		RegisterRequest userRegisterRequest =
-				new RegisterRequest("testuserhandle", userEmail, password, "First", "Last");
+		RegisterRequest userRegisterRequest = new RegisterRequest(userHandle, userEmail, password, "First", "Last");
 		ResponseEntity<String> userRegisterResponse =
 				restTemplate.postForEntity(BASE_URL + "/auth/register", userRegisterRequest, String.class);
 		assertThat(userRegisterResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 		// 2. Login as the registered USER and retrieve the JWT
-		LoginRequest userLoginRequest = new LoginRequest(userEmail, password);
+		LoginRequest userLoginRequest = new LoginRequest(userHandle, password);
 		ResponseEntity<AuthResponse> userLoginResponse =
 				restTemplate.postForEntity(BASE_URL + "/auth/login", userLoginRequest, AuthResponse.class);
 		assertThat(userLoginResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
