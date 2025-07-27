@@ -1,5 +1,6 @@
 package com.online.judge.backend.service;
 
+import static com.online.judge.backend.factory.SubmissionFactory.createSubmission;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -13,10 +14,7 @@ import com.online.judge.backend.exception.SubmissionNotFoundException;
 import com.online.judge.backend.model.Problem;
 import com.online.judge.backend.model.Submission;
 import com.online.judge.backend.model.User;
-import com.online.judge.backend.model.shared.SubmissionLanguage;
-import com.online.judge.backend.model.shared.SubmissionStatus;
 import com.online.judge.backend.repository.SubmissionRepository;
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,7 +45,7 @@ class SubmissionServiceTest {
 	@Test
 	void listSubmissions_shouldReturnPaginatedSubmissions() {
 		int page = 1;
-		List<Submission> submissions = List.of(createSubmission(1L), createSubmission(2L));
+		List<Submission> submissions = List.of(createSubmissionWithId(1L), createSubmissionWithId(2L));
 		Pageable pageable =
 				PageRequest.of(page - 1, PAGE_SIZE, Sort.by("submittedAt").descending());
 		Page<Submission> submissionPage = new PageImpl<>(submissions, pageable, submissions.size());
@@ -62,7 +60,7 @@ class SubmissionServiceTest {
 	@Test
 	void getSubmissionDetailsById_whenSubmissionExists_shouldReturnDetails() {
 		Long submissionId = 10L;
-		Submission submission = createSubmission(submissionId);
+		Submission submission = createSubmissionWithId(submissionId);
 		when(submissionRepository.findById(submissionId)).thenReturn(Optional.of(submission));
 		SubmissionDetailsUi expectedSubmmissionDetails = new SubmissionDetailsUi(
 				submission.getId(),
@@ -94,24 +92,9 @@ class SubmissionServiceTest {
 		assertEquals("Submission with ID " + submissionId + " not found", exception.getMessage());
 	}
 
-	private Submission createSubmission(Long submissionId) {
-		User user = new User();
-		user.setHandle("testuser");
-
-		Problem problem = new Problem();
-		problem.setTitle("Test Problem");
-
-		Submission submission = new Submission();
+	private Submission createSubmissionWithId(Long submissionId) {
+		Submission submission = createSubmission();
 		submission.setId(submissionId);
-		submission.setUser(user);
-		submission.setProblem(problem);
-		submission.setStatus(SubmissionStatus.PASSED);
-		submission.setLanguage(SubmissionLanguage.JAVA);
-		submission.setSubmittedAt(Instant.now());
-		submission.setCode("class Main {}");
-		submission.setExecutionTimeSeconds(0.123);
-		submission.setMemoryUsedMb(128);
-
 		return submission;
 	}
 

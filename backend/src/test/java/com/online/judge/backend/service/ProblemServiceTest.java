@@ -1,5 +1,9 @@
 package com.online.judge.backend.service;
 
+import static com.online.judge.backend.factory.ProblemFactory.createProblem;
+import static com.online.judge.backend.factory.TagFactory.createTag;
+import static com.online.judge.backend.factory.TestCaseFactory.createTestCase;
+import static com.online.judge.backend.factory.UserFactory.createUser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -65,11 +69,7 @@ class ProblemServiceTest {
 	@Test
 	void listProblems_whenProblemsExist_returnsProblemSummaryList() {
 		int page = 5;
-		Problem mockProblem = new Problem();
-		mockProblem.setId(1L);
-		mockProblem.setTitle(PROBLEM_TITLE);
-		mockProblem.setDifficulty(PROBLEM_DIFFICULTY);
-		List<Problem> problems = List.of(mockProblem, mockProblem);
+		List<Problem> problems = List.of(createProblem(), createProblem());
 		Pageable pageable =
 				PageRequest.of(page - 1, PAGE_SIZE, Sort.by("createdAt").descending());
 		Page<Problem> problemPage = new PageImpl<>(problems, pageable, problems.size());
@@ -98,16 +98,10 @@ class ProblemServiceTest {
 	@Test
 	void getProblemDetailsById_whenProblemExists_returnsProblemDetails() {
 		Long problemId = 1L;
-		Problem mockProblem = new Problem();
+		Problem mockProblem = createProblem();
 		mockProblem.setId(problemId);
-		mockProblem.setTitle(PROBLEM_TITLE);
-		mockProblem.setDifficulty(PROBLEM_DIFFICULTY);
-		Tag tag1 = createTagEntity(mockProblem, ProblemTag.ARRAY);
-		Tag tag2 = createTagEntity(mockProblem, ProblemTag.GREEDY);
-		mockProblem.setTags(List.of(tag1, tag2));
-		TestCase sampleTestCase = createTestCaseEntity(mockProblem, "Input 1", "Output 1", "Explanation 1", true);
-		TestCase hiddenTestCase =
-				createTestCaseEntity(mockProblem, "Hidden Input 1", "Hidden Output 1", "Hidden Explanation 1", false);
+		TestCase sampleTestCase = createTestCase(mockProblem, true);
+		TestCase hiddenTestCase = createTestCase(mockProblem, false);
 		mockProblem.setTestCases(List.of(sampleTestCase, hiddenTestCase));
 		when(problemRepository.findById(problemId)).thenReturn(Optional.of(mockProblem));
 		ProblemDetailsUi expectedProblemDetails = new ProblemDetailsUi(
@@ -139,7 +133,7 @@ class ProblemServiceTest {
 
 	@Test
 	void createProblem_whenUserIsAdmin_createsAndReturnsProblem() {
-		User adminUser = createUserWithRole(UserRole.ADMIN);
+		User adminUser = createUser("admin", UserRole.ADMIN);
 		when(userUtil.getCurrentAuthenticatedUser()).thenReturn(adminUser);
 		CreateProblemRequest request = new CreateProblemRequest(
 				PROBLEM_TITLE,
@@ -173,9 +167,7 @@ class ProblemServiceTest {
 
 	@Test
 	void createProblem_whenUserIsNotAdmin_throwsUserNotAuthorizedException() {
-		User regularUser = new User();
-		regularUser.setHandle("user");
-		regularUser.setRole(UserRole.USER);
+		User regularUser = createUser();
 		when(userUtil.getCurrentAuthenticatedUser()).thenReturn(regularUser);
 
 		CreateProblemRequest request = new CreateProblemRequest(
@@ -202,16 +194,15 @@ class ProblemServiceTest {
 		problem.setDifficulty(request.difficulty());
 		problem.setTimeLimitSecond(request.timeLimit());
 		problem.setMemoryLimitMb(request.memoryLimit());
-		problem.setTags(request.tags().stream()
-				.map(tag -> createTagEntity(problem, tag))
-				.toList());
+		problem.setTags(
+				request.tags().stream().map(tag -> createTag(problem, tag)).toList());
 		problem.setTestCases(request.testCases().stream()
-				.map(testCase -> createTestCaseEntity(
+				.map(testCaseRequest -> createTestCase(
 						problem,
-						testCase.input(),
-						testCase.expectedOutput(),
-						testCase.explanation(),
-						testCase.isSample()))
+						testCaseRequest.isSample(),
+						testCaseRequest.input(),
+						testCaseRequest.expectedOutput(),
+						testCaseRequest.explanation()))
 				.toList());
 		return problem;
 	}
@@ -231,32 +222,7 @@ class ProblemServiceTest {
 						.toList());
 	}
 
-	private Tag createTagEntity(Problem mockProblem, ProblemTag tag) {
-		Tag newTag = new Tag();
-		newTag.setTagName(tag);
-		newTag.setProblem(mockProblem);
-		return newTag;
-	}
-
-	private TestCase createTestCaseEntity(
-			Problem mockProblem, String input, String output, String explanation, boolean isSample) {
-		TestCase testCase = new TestCase();
-		testCase.setInput(input);
-		testCase.setOutput(output);
-		testCase.setExplanation(explanation);
-		testCase.setIsSample(isSample);
-		testCase.setProblem(mockProblem);
-		return testCase;
-	}
-
 	private TestCaseUi createTestCaseUi(TestCase testCase) {
 		return new TestCaseUi(testCase.getInput(), testCase.getOutput(), testCase.getExplanation());
-	}
-
-	private User createUserWithRole(UserRole role) {
-		User user = new User();
-		user.setHandle("testUser");
-		user.setRole(role);
-		return user;
 	}
 }
