@@ -7,6 +7,7 @@ import com.dsa.platform.backend.dto.request.CreateTestCaseRequest;
 import com.dsa.platform.backend.dto.request.LoginRequest;
 import com.dsa.platform.backend.dto.request.RegisterRequest;
 import com.dsa.platform.backend.dto.response.AuthResponse;
+import com.dsa.platform.backend.dto.response.CreateProblemResponse;
 import com.dsa.platform.backend.model.shared.ProblemDifficulty;
 import com.dsa.platform.backend.model.shared.ProblemTag;
 import java.util.List;
@@ -83,8 +84,8 @@ class LifecycleIT {
 		String password = "password123";
 		RegisterRequest userRegisterRequest =
 				new RegisterRequest("testuserhandle", userEmail, password, "First", "Last");
-		ResponseEntity<AuthResponse> userRegisterResponse =
-				restTemplate.postForEntity(BASE_URL + "/auth/register", userRegisterRequest, AuthResponse.class);
+		ResponseEntity<String> userRegisterResponse =
+				restTemplate.postForEntity(BASE_URL + "/auth/register", userRegisterRequest, String.class);
 		assertThat(userRegisterResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 		// 2. Login as the registered USER and retrieve the JWT
@@ -105,7 +106,8 @@ class LifecycleIT {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setBearerAuth(userToken);
 		HttpEntity<CreateProblemRequest> requestEntity = new HttpEntity<>(CREATE_PROBLEM_REQUEST, headers);
-		ResponseEntity<String> response = restTemplate.postForEntity("/api/problems", requestEntity, String.class);
+		ResponseEntity<CreateProblemResponse> response =
+				restTemplate.postForEntity("/api/problems", requestEntity, CreateProblemResponse.class);
 
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
 	}
