@@ -14,12 +14,12 @@ import com.online.judge.backend.model.shared.ProblemTag;
 import java.util.List;
 
 public class ProblemConverter {
-	public static ProblemSummaryUi toProblemSummaryUi(Problem problem, List&lt;ProblemTag&gt; tags) {
-<span class="fc" id="L18">		return new ProblemSummaryUi(problem.getId(), problem.getTitle(), problem.getDifficulty(), tags);</span>
+	public static ProblemSummaryUi toProblemSummaryUi(Problem problem) {
+<span class="fc" id="L18">		return new ProblemSummaryUi(</span>
+<span class="fc" id="L19">				problem.getId(), problem.getTitle(), problem.getDifficulty(), listProblemTags(problem));</span>
 	}
 
-	public static ProblemDetailsUi toProblemDetailsUi(
-			Problem problem, List&lt;ProblemTag&gt; tags, List&lt;TestCase&gt; sampleTestCases) {
+	public static ProblemDetailsUi toProblemDetailsUi(Problem problem) {
 <span class="fc" id="L23">		return new ProblemDetailsUi(</span>
 <span class="fc" id="L24">				problem.getId(),</span>
 <span class="fc" id="L25">				problem.getTitle(),</span>
@@ -27,8 +27,8 @@ public class ProblemConverter {
 <span class="fc" id="L27">				problem.getTimeLimitSecond(),</span>
 <span class="fc" id="L28">				problem.getMemoryLimitMb(),</span>
 <span class="fc" id="L29">				problem.getDifficulty(),</span>
-				tags,
-<span class="fc" id="L31">				toTestCaseUi(sampleTestCases));</span>
+<span class="fc" id="L30">				listProblemTags(problem),</span>
+<span class="fc" id="L31">				toTestCaseUi(listSampleTestCases(problem)));</span>
 	}
 
 	public static Problem toProblemFromCreateProblemRequest(CreateProblemRequest request) {
@@ -50,6 +50,14 @@ public class ProblemConverter {
 <span class="fc" id="L50">		problem.setTestCases(testCases);</span>
 
 <span class="fc" id="L52">		return problem;</span>
+	}
+
+	private static List&lt;ProblemTag&gt; listProblemTags(Problem problem) {
+<span class="fc" id="L56">		return problem.getTags().stream().map(Tag::getTagName).toList();</span>
+	}
+
+	private static List&lt;TestCase&gt; listSampleTestCases(Problem problem) {
+<span class="fc" id="L60">		return problem.getTestCases().stream().filter(TestCase::getIsSample).toList();</span>
 	}
 
 	private ProblemConverter() {

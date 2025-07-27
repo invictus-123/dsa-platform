@@ -12,7 +12,7 @@ public class SubmissionConverter {
 	public static SubmissionDetailsUi toSubmissionDetailsUi(Submission submission) {
 <span class="fc" id="L13">		return new SubmissionDetailsUi(</span>
 <span class="fc" id="L14">				submission.getId(),</span>
-<span class="fc" id="L15">				toProblemSummaryUi(submission.getProblem(), List.of()),</span>
+<span class="fc" id="L15">				toProblemSummaryUi(submission.getProblem()),</span>
 <span class="fc" id="L16">				toUserSummaryUi(submission.getUser()),</span>
 <span class="fc" id="L17">				submission.getStatus(),</span>
 <span class="fc" id="L18">				submission.getLanguage(),</span>
@@ -26,7 +26,7 @@ public class SubmissionConverter {
 	public static SubmissionSummaryUi toSubmissionSummaryUi(Submission submission) {
 <span class="fc" id="L27">		return new SubmissionSummaryUi(</span>
 <span class="fc" id="L28">				submission.getId(),</span>
-<span class="fc" id="L29">				toProblemSummaryUi(submission.getProblem(), List.of()),</span>
+<span class="fc" id="L29">				toProblemSummaryUi(submission.getProblem()),</span>
 <span class="fc" id="L30">				toUserSummaryUi(submission.getUser()),</span>
 <span class="fc" id="L31">				submission.getStatus(),</span>
 <span class="fc" id="L32">				submission.getLanguage(),</span>
