@@ -148,7 +148,7 @@ class LifecycleIT {
 		ResponseEntity<CreateProblemResponse> adminCreateProblemResponse = restTemplate.postForEntity(
 				BASE_URL + "/problems", adminCreateProblemRequest, CreateProblemResponse.class);
 
-		assertThat(adminCreateProblemResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(adminCreateProblemResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 		ProblemDetailsUi problemDetails = adminCreateProblemResponse.getBody().problemDetails();
 		problemId = problemDetails.id();
 		assertProblemDetails(problemDetails);
@@ -157,7 +157,7 @@ class LifecycleIT {
 		for (int i = 2; i <= PROBLEM_COUNT; i++) {
 			adminCreateProblemResponse = restTemplate.postForEntity(
 					BASE_URL + "/problems", adminCreateProblemRequest, CreateProblemResponse.class);
-			assertThat(adminCreateProblemResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+			assertThat(adminCreateProblemResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 		}
 	}
 
