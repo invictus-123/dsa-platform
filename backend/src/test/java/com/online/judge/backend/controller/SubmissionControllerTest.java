@@ -6,17 +6,21 @@ import static com.online.judge.backend.factory.UiFactory.createSubmissionSummary
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.online.judge.backend.dto.request.SubmitCodeRequest;
 import com.online.judge.backend.dto.response.GetSubmissionByIdResponse;
 import com.online.judge.backend.dto.response.ListSubmissionsResponse;
+import com.online.judge.backend.dto.response.SubmitCodeResponse;
 import com.online.judge.backend.dto.ui.SubmissionDetailsUi;
 import com.online.judge.backend.dto.ui.SubmissionSummaryUi;
 import com.online.judge.backend.exception.SubmissionNotFoundException;
 import com.online.judge.backend.model.Submission;
+import com.online.judge.backend.model.shared.SubmissionLanguage;
 import com.online.judge.backend.service.SubmissionService;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +29,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -113,6 +118,27 @@ class SubmissionControllerTest {
 				.thenThrow(new SubmissionNotFoundException("Submission not found with id: " + submissionId));
 
 		mockMvc.perform(get("/api/v1/submissions/{id}", submissionId)).andExpect(status().isNotFound());
+	}
+
+	@Test
+	void submit_returnsSubmissionDetails() throws Exception {
+		Long problemId = 1L;
+		Long submissionId = 456L;
+		SubmitCodeRequest request = new SubmitCodeRequest(problemId, "code", SubmissionLanguage.JAVA);
+		SubmissionDetailsUi submissionDetails = createSubmissionDetailsUiWithId(submissionId);
+		when(submissionService.submitCode(request)).thenReturn(submissionDetails);
+		SubmitCodeResponse expectedResponse = new SubmitCodeResponse(submissionDetails);
+
+		ResponseEntity<SubmitCodeResponse> response = submissionController.submit(request);
+
+		assertEquals(201, response.getStatusCode().value());
+		assertEquals(expectedResponse, response.getBody());
+
+		mockMvc.perform(post("/api/v1/submissions")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(request)))
+				.andExpect(status().isCreated())
+				.andExpect(content().json(objectMapper.writeValueAsString(expectedResponse)));
 	}
 
 	private SubmissionDetailsUi createSubmissionDetailsUiWithId(Long id) {
