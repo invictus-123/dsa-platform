@@ -80,7 +80,7 @@ class LifecycleIT {
 	@Order(1)
 	void userRegistrationAndLogin() {
 		// 1. Register a standard USER
-		String userHandle = ("testuserhandle-" + UUID.randomUUID()).substring(0, 20);
+		String userHandle = ("testuser-" + UUID.randomUUID()).substring(0, 20);
 		String userEmail = "testuser-" + UUID.randomUUID() + "@example.com";
 		String password = "password123";
 		RegisterRequest userRegisterRequest = new RegisterRequest(userHandle, userEmail, password, "First", "Last");
