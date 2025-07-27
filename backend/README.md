@@ -20,3 +20,23 @@ This is the backend for an online judge platform, built with **Spring Boot**. It
 * **JUnit 5**, **Mockito**, and **Testcontainers** for testing.
 * **Spotless** for code formatting.
 * **JaCoCo** for code coverage analysis.
+
+## API Endpoints
+
+The following are the main API endpoints provided by the backend:
+
+### Authentication
+
+* `POST /api/v1/auth/register`: Register a new user and receive a JWT.
+* `POST /api/v1/auth/login`: Authenticate an existing user and receive a JWT.
+* `POST /api/v1/auth/logout`: Log out the current user.
+
+### Problems
+
+* `GET /api/v1/problems/list?page={page}`: Get a list of problems for a given page.
+* `GET /api/v1/problems/{problemId}`: Get a single problem by its ID.
+* `POST /api/v1/problems`: Create a new problem (admin only).
+
+### Submissions
+
+__WIP__
