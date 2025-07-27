@@ -165,7 +165,7 @@ class LifecycleIT {
 	@Order(3)
 	void retrieveProblems_withoutJwtHeaders() {
 		ResponseEntity<ListProblemsResponse> listResponse =
-				restTemplate.getForEntity(BASE_URL + "/problems", ListProblemsResponse.class);
+				restTemplate.getForEntity(BASE_URL + "/problems/list", ListProblemsResponse.class);
 
 		assertThat(listResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 		List<ProblemSummaryUi> problems = listResponse.getBody().problems();
