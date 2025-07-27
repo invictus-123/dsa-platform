@@ -31,7 +31,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
@@ -39,7 +38,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class ProblemServiceTest {
@@ -57,14 +55,11 @@ class ProblemServiceTest {
 	@Mock
 	private UserUtil userUtil;
 
-	@InjectMocks
 	private ProblemService problemService;
 
 	@BeforeEach
 	void setUp() {
-		// Use ReflectionTestUtils to set the private 'pageSize' field
-		// This simulates the behavior of @Value for this unit test
-		ReflectionTestUtils.setField(problemService, "pageSize", PAGE_SIZE);
+		problemService = new ProblemService(problemRepository, userUtil, PAGE_SIZE);
 	}
 
 	@Test

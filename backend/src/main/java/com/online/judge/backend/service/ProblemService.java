@@ -32,17 +32,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProblemService {
 	private static final Logger logger = LoggerFactory.getLogger(ProblemService.class);
 
-	private final int pageSize;
 	private final ProblemRepository problemRepository;
 	private final UserUtil userUtil;
+	private final int pageSize;
 
 	public ProblemService(
-			@Value("${problems.list.page-size:50}") int pageSize,
 			ProblemRepository problemRepository,
-			UserUtil userUtil) {
-		this.pageSize = pageSize;
+			UserUtil userUtil,
+			@Value("${problems.list.page-size:50}") int pageSize) {
 		this.problemRepository = problemRepository;
 		this.userUtil = userUtil;
+		this.pageSize = pageSize;
 	}
 
 	/**
