@@ -1,12 +1,20 @@
 package com.online.judge.backend.service;
 
 import static com.online.judge.backend.converter.SubmissionConverter.toSubmissionDetailsUi;
+import static com.online.judge.backend.converter.SubmissionConverter.toSubmissionFromRequest;
 
 import com.online.judge.backend.converter.SubmissionConverter;
+import com.online.judge.backend.dto.request.SubmitCodeRequest;
 import com.online.judge.backend.dto.ui.SubmissionDetailsUi;
 import com.online.judge.backend.dto.ui.SubmissionSummaryUi;
+import com.online.judge.backend.exception.ProblemNotFoundException;
 import com.online.judge.backend.exception.SubmissionNotFoundException;
+import com.online.judge.backend.model.Problem;
+import com.online.judge.backend.model.Submission;
+import com.online.judge.backend.model.User;
+import com.online.judge.backend.repository.ProblemRepository;
 import com.online.judge.backend.repository.SubmissionRepository;
+import com.online.judge.backend.util.UserUtil;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,12 +30,19 @@ import org.springframework.transaction.annotation.Transactional;
 public class SubmissionService {
 	private static final Logger logger = LoggerFactory.getLogger(SubmissionService.class);
 
+	private final ProblemRepository problemRepository;
 	private final SubmissionRepository submissionRepository;
+	private final UserUtil userUtil;
 	private final int pageSize;
 
 	public SubmissionService(
-			SubmissionRepository submissionRepository, @Value("${submissions.list.page-size:50}") int pageSize) {
+			ProblemRepository problemRepository,
+			SubmissionRepository submissionRepository,
+			UserUtil userUtil,
+			@Value("${submissions.list.page-size:50}") int pageSize) {
+		this.problemRepository = problemRepository;
 		this.submissionRepository = submissionRepository;
+		this.userUtil = userUtil;
 		this.pageSize = pageSize;
 	}
 
@@ -72,5 +87,33 @@ public class SubmissionService {
 					logger.error("Submission with ID {} not found", submissionId);
 					return new SubmissionNotFoundException("Submission with ID " + submissionId + " not found");
 				});
+	}
+
+	/**
+	 * Creates a new submission for a problem.
+	 *
+	 * @param request
+	 *               The request containing the code, language, and problem ID.
+	 * @return A DTO representing the newly created submission's details.
+	 */
+	@Transactional
+	public SubmissionDetailsUi submitCode(SubmitCodeRequest request) {
+		User currentUser = userUtil.getCurrentAuthenticatedUser();
+		Problem problem = problemRepository.findById(request.problemId()).orElseThrow(() -> {
+			logger.error("Could not submit code, problem with ID {} not found", request.problemId());
+			return new ProblemNotFoundException("Problem with ID " + request.problemId() + " not found");
+		});
+
+		Submission submission = toSubmissionFromRequest(request);
+		submission.setProblem(problem);
+		submission.setUser(currentUser);
+		Submission savedSubmission = submissionRepository.save(submission);
+		logger.info(
+				"Code submitted with ID: {} for problem: {} by user: {}",
+				savedSubmission.getId(),
+				problem.getId(),
+				currentUser.getHandle());
+
+		return toSubmissionDetailsUi(savedSubmission);
 	}
 }
