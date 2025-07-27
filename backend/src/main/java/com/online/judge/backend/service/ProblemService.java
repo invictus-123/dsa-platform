@@ -31,7 +31,7 @@ import com.online.judge.backend.util.UserUtil;
 public class ProblemService {
 	private static final Logger logger = LoggerFactory.getLogger(ProblemService.class);
 
-	@Value("${problem.list.page-size:50}")
+	@Value("${problems.list.page-size:50}")
 	private int pageSize;
 
 	private final ProblemRepository problemRepository;
