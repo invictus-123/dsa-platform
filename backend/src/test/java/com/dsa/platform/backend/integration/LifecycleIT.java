@@ -48,7 +48,7 @@ class LifecycleIT {
 	private static final String BASE_URL = "/api/v1";
 	private static final String PROBLEM_TITLE = "Title";
 	private static final String PROBLEM_STATEMENT = "Statement";
-	private static final int PROBLEM_COUNT = 60;
+	private static final int PROBLEM_COUNT = 30;
 	private static final ProblemDifficulty PROBLEM_DIFFICULTY = ProblemDifficulty.EASY;
 	private static final Double PROBLEM_TIME_LIMIT = 1.0;
 	private static final Integer PROBLEM_MEMORY_LIMIT = 256;
@@ -163,8 +163,8 @@ class LifecycleIT {
 
 		assertThat(listResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 		List<ProblemSummaryUi> problems = listResponse.getBody().problems();
-		// 50 is the page size
-		assertThat(problems).isNotNull().hasSize(50);
+		// 20 is the page size
+		assertThat(problems).isNotNull().hasSize(20);
 
 		listResponse = restTemplate.getForEntity(BASE_URL + "/problems/list?page=2", ListProblemsResponse.class);
 

@@ -20,6 +20,7 @@ import com.dsa.platform.backend.util.UserUtil;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -30,7 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ProblemService {
 	private static final Logger logger = LoggerFactory.getLogger(ProblemService.class);
-	private static final int PAGE_SIZE = 50; // Default page size for pagination
+
+	@Value("${problem.list.page-size:50}")
+	private int pageSize;
 
 	private final ProblemRepository problemRepository;
 	private final UserUtil userUtil;
@@ -53,7 +56,7 @@ public class ProblemService {
 		logger.info("Fetching all problems for page {}", page);
 
 		Pageable pageable =
-				PageRequest.of(page - 1, PAGE_SIZE, Sort.by("createdAt").descending());
+				PageRequest.of(page - 1, pageSize, Sort.by("createdAt").descending());
 		return problemRepository.findAll(pageable).getContent().stream()
 				.map(problem -> toProblemSummaryUi(problem, listTags(problem.getTags())))
 				.toList();
