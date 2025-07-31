@@ -201,7 +201,7 @@ class LifecycleIT {
 		ResponseEntity<SubmitCodeResponse> submitCodeResponse =
 				restTemplate.postForEntity(BASE_URL + "/submissions", submitCodeRequest, SubmitCodeResponse.class);
 
-		assertThat(submitCodeResponse.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+		assertThat(submitCodeResponse.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
 
 		HttpHeaders userHeaders = new HttpHeaders();
 		userHeaders.setBearerAuth(userToken);
