@@ -209,7 +209,7 @@ class LifecycleIT {
 		ResponseEntity<SubmitCodeResponse> userSubmitCodeResponse =
 				restTemplate.postForEntity(BASE_URL + "/submissions", userSubmitCodeRequest, SubmitCodeResponse.class);
 
-		assertThat(userSubmitCodeResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(userSubmitCodeResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 		SubmissionDetailsUi submissionDetails = userSubmitCodeResponse.getBody().submissionDetails();
 		assertSubmissionDetails(submissionDetails);
 		submissionId = submissionDetails.id();
