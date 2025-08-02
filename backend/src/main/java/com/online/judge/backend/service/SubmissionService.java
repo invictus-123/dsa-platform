@@ -12,6 +12,7 @@ import com.online.judge.backend.exception.SubmissionNotFoundException;
 import com.online.judge.backend.model.Problem;
 import com.online.judge.backend.model.Submission;
 import com.online.judge.backend.model.User;
+import com.online.judge.backend.model.shared.SubmissionStatus;
 import com.online.judge.backend.repository.ProblemRepository;
 import com.online.judge.backend.repository.SubmissionRepository;
 import com.online.judge.backend.util.UserUtil;
@@ -116,4 +117,7 @@ public class SubmissionService {
 
 		return toSubmissionDetailsUi(savedSubmission);
 	}
+
+	@Transactional
+	public void updateStatus(Long submissionId, SubmissionStatus status) {}
 }
