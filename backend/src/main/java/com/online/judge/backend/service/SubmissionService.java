@@ -2,6 +2,7 @@ package com.online.judge.backend.service;
 
 import static com.online.judge.backend.converter.SubmissionConverter.toSubmissionDetailsUi;
 import static com.online.judge.backend.converter.SubmissionConverter.toSubmissionFromRequest;
+import static com.online.judge.backend.converter.SubmissionConverter.toSubmissionMessage;
 
 import com.online.judge.backend.converter.SubmissionConverter;
 import com.online.judge.backend.dto.request.SubmitCodeRequest;
@@ -13,6 +14,7 @@ import com.online.judge.backend.model.Problem;
 import com.online.judge.backend.model.Submission;
 import com.online.judge.backend.model.User;
 import com.online.judge.backend.model.shared.SubmissionStatus;
+import com.online.judge.backend.queue.SubmissionPublisher;
 import com.online.judge.backend.repository.ProblemRepository;
 import com.online.judge.backend.repository.SubmissionRepository;
 import com.online.judge.backend.util.UserUtil;
@@ -33,16 +35,19 @@ public class SubmissionService {
 
 	private final ProblemRepository problemRepository;
 	private final SubmissionRepository submissionRepository;
+	private final SubmissionPublisher submissionPublisher;
 	private final UserUtil userUtil;
 	private final int pageSize;
 
 	public SubmissionService(
 			ProblemRepository problemRepository,
 			SubmissionRepository submissionRepository,
+			SubmissionPublisher submissionPublisher,
 			UserUtil userUtil,
 			@Value("${submissions.list.page-size:50}") int pageSize) {
 		this.problemRepository = problemRepository;
 		this.submissionRepository = submissionRepository;
+		this.submissionPublisher = submissionPublisher;
 		this.userUtil = userUtil;
 		this.pageSize = pageSize;
 	}
@@ -112,6 +117,8 @@ public class SubmissionService {
 				problem.getId(),
 				currentUser.getHandle());
 
+		enqueueSubmission(savedSubmission);
+
 		return toSubmissionDetailsUi(savedSubmission);
 	}
 
@@ -163,5 +170,9 @@ public class SubmissionService {
 	private static SubmissionNotFoundException toSubmissionNotFoundException(Long submissionId) {
 		logger.error("Submission with ID {} not found", submissionId);
 		return new SubmissionNotFoundException("Submission with ID " + submissionId + " not found");
+	}
+
+	private void enqueueSubmission(Submission submission) {
+		submissionPublisher.sendSubmission(toSubmissionMessage(submission));
 	}
 }

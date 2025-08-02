@@ -18,6 +18,14 @@ public class TestCaseResultService {
 		this.testCaseResultRepository = testCaseResultRepository;
 	}
 
+	/**
+	 * Updates the status for a particular submission.
+	 *
+	 * @param submissionId
+	 *             The ID of the submission
+	 * @param staus
+	 *             The status of the submission
+	 */
 	@Transactional
 	public void processTestResult(ResultNotificationMessage message) {}
 }
