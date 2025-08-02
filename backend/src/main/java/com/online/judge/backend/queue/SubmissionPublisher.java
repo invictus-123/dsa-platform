@@ -1,5 +1,6 @@
 package com.online.judge.backend.queue;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.online.judge.backend.config.RabbitMqConfig;
 import com.online.judge.backend.dto.message.SubmissionMessage;
 import jakarta.annotation.PostConstruct;
@@ -15,9 +16,11 @@ public class SubmissionPublisher implements RabbitTemplate.ConfirmCallback {
 	private static final Logger log = LoggerFactory.getLogger(SubmissionPublisher.class);
 
 	private final RabbitTemplate rabbitTemplate;
+	private final ObjectMapper objectMapper;
 
-	public SubmissionPublisher(RabbitTemplate rabbitTemplate) {
+	public SubmissionPublisher(RabbitTemplate rabbitTemplate, ObjectMapper objectMapper) {
 		this.rabbitTemplate = rabbitTemplate;
+		this.objectMapper = objectMapper;
 	}
 
 	@PostConstruct
@@ -32,7 +35,7 @@ public class SubmissionPublisher implements RabbitTemplate.ConfirmCallback {
 			rabbitTemplate.convertAndSend(
 					RabbitMqConfig.SUBMISSIONS_EXCHANGE,
 					RabbitMqConfig.SUBMISSION_NEW_KEY,
-					submissionMessage,
+					objectMapper.writeValueAsString(submissionMessage),
 					correlationData);
 			log.info("Submission {} published to RabbitMQ.", submissionMessage.submissionId());
 		} catch (Exception e) {
