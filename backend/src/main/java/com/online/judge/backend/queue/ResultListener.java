@@ -2,6 +2,7 @@ package com.online.judge.backend.queue;
 
 import static com.online.judge.backend.config.RabbitMqConfig.RESULTS_QUEUE;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.online.judge.backend.dto.message.ResultNotificationMessage;
 import com.online.judge.backend.service.SubmissionService;
 import com.online.judge.backend.service.TestCaseResultService;
@@ -18,31 +19,42 @@ import org.springframework.stereotype.Component;
 public class ResultListener {
 	private static final Logger log = LoggerFactory.getLogger(ResultListener.class);
 
+	private final ObjectMapper objectMapper;
 	private final SubmissionService submissionService;
 	private final TestCaseResultService testCaseResultService;
 
-	public ResultListener(SubmissionService submissionService, TestCaseResultService testCaseResultService) {
+	public ResultListener(
+			ObjectMapper objectMapper,
+			SubmissionService submissionService,
+			TestCaseResultService testCaseResultService) {
+		this.objectMapper = objectMapper;
 		this.submissionService = submissionService;
 		this.testCaseResultService = testCaseResultService;
 	}
 
 	@RabbitListener(queues = RESULTS_QUEUE)
-	public void handleFinalResult(
-			ResultNotificationMessage message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag)
+	public void handleFinalResult(String message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag)
 			throws IOException {
-		log.info("Received final result for submission {}", message.submissionId());
+		ResultNotificationMessage resultNotificationMessage =
+				objectMapper.readValue(message, ResultNotificationMessage.class);
+		log.info("Received final result for submission {}", resultNotificationMessage.submissionId());
 		try {
 			submissionService.updateTimeTakenAndMemoryUsed(
-					message.submissionId(), message.timeTaken(), message.memoryUsed());
-			testCaseResultService.processTestResult(message);
+					resultNotificationMessage.submissionId(),
+					resultNotificationMessage.timeTaken(),
+					resultNotificationMessage.memoryUsed());
+			testCaseResultService.processTestResult(resultNotificationMessage);
 
 			channel.basicAck(tag, /* multiple= */ false);
-			log.debug("ACK sent for final result of submission {}", message.submissionId());
+			log.debug("ACK sent for final result of submission {}", resultNotificationMessage.submissionId());
 		} catch (Exception e) {
-			log.error("Error processing final result for submission {}: {}", message.submissionId(), e.getMessage());
+			log.error(
+					"Error processing final result for submission {}: {}",
+					resultNotificationMessage.submissionId(),
+					e.getMessage());
 
 			channel.basicNack(tag, /* multiple= */ false, /* requeue= */ false);
-			log.warn("NACK sent for final result of submission {}", message.submissionId());
+			log.warn("NACK sent for final result of submission {}", resultNotificationMessage.submissionId());
 		}
 	}
 }
