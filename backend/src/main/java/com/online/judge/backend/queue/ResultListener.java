@@ -43,7 +43,8 @@ public class ResultListener {
 					resultNotificationMessage.submissionId(),
 					resultNotificationMessage.timeTaken(),
 					resultNotificationMessage.memoryUsed());
-			testCaseResultService.processTestResult(resultNotificationMessage);
+			testCaseResultService.processTestResult(
+					resultNotificationMessage.submissionId(), resultNotificationMessage.testCaseResults());
 
 			channel.basicAck(tag, /* multiple= */ false);
 			log.debug("ACK sent for final result of submission {}", resultNotificationMessage.submissionId());

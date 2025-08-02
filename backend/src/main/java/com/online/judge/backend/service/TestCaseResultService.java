@@ -1,7 +1,14 @@
 package com.online.judge.backend.service;
 
-import com.online.judge.backend.dto.message.ResultNotificationMessage;
+import static com.online.judge.backend.converter.TestCaseResultConverter.toTestCaseResult;
+
+import com.online.judge.backend.dto.message.TestCaseResultMessage;
+import com.online.judge.backend.exception.SubmissionNotFoundException;
+import com.online.judge.backend.model.Submission;
+import com.online.judge.backend.model.TestCaseResult;
+import com.online.judge.backend.repository.SubmissionRepository;
 import com.online.judge.backend.repository.TestCaseResultRepository;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -12,9 +19,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class TestCaseResultService {
 	private static final Logger logger = LoggerFactory.getLogger(TestCaseResultService.class);
 
-	private TestCaseResultRepository testCaseResultRepository;
+	private final SubmissionRepository submissionRepository;
+	private final TestCaseResultRepository testCaseResultRepository;
 
-	public TestCaseResultService(TestCaseResultRepository testCaseResultRepository) {
+	public TestCaseResultService(
+			SubmissionRepository submissionRepository, TestCaseResultRepository testCaseResultRepository) {
+		this.submissionRepository = submissionRepository;
 		this.testCaseResultRepository = testCaseResultRepository;
 	}
 
@@ -22,10 +32,22 @@ public class TestCaseResultService {
 	 * Updates the status for a particular submission.
 	 *
 	 * @param submissionId
-	 *             The ID of the submission
-	 * @param staus
-	 *             The status of the submission
+	 *             ID of the submission
+	 * @param testCaseResults
+	 *             Result of the individual test case execution
 	 */
 	@Transactional
-	public void processTestResult(ResultNotificationMessage message) {}
+	public void processTestResult(Long submissionId, List<TestCaseResultMessage> testCaseResults) {
+		Submission submission = submissionRepository
+				.findById(submissionId)
+				.orElseThrow(() -> toSubmissionNotFoundException(submissionId));
+
+		List<TestCaseResult> testCaseResultEntities = toTestCaseResult(submission, testCaseResults);
+		testCaseResultRepository.saveAll(testCaseResultEntities);
+	}
+
+	private static SubmissionNotFoundException toSubmissionNotFoundException(Long submissionId) {
+		logger.error("Submission with ID {} not found", submissionId);
+		return new SubmissionNotFoundException("Submission with ID " + submissionId + " not found");
+	}
 }
