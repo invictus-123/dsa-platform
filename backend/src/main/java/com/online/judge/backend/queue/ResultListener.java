@@ -3,6 +3,7 @@ package com.online.judge.backend.queue;
 import static com.online.judge.backend.config.RabbitMqConfig.RESULTS_QUEUE;
 
 import com.online.judge.backend.dto.message.ResultNotificationMessage;
+import com.online.judge.backend.service.SubmissionService;
 import com.online.judge.backend.service.TestCaseResultService;
 import com.rabbitmq.client.Channel;
 import java.io.IOException;
@@ -17,9 +18,11 @@ import org.springframework.stereotype.Component;
 public class ResultListener {
 	private static final Logger log = LoggerFactory.getLogger(ResultListener.class);
 
+	private final SubmissionService submissionService;
 	private final TestCaseResultService testCaseResultService;
 
-	public ResultListener(TestCaseResultService testCaseResultService) {
+	public ResultListener(SubmissionService submissionService, TestCaseResultService testCaseResultService) {
+		this.submissionService = submissionService;
 		this.testCaseResultService = testCaseResultService;
 	}
 
@@ -29,6 +32,8 @@ public class ResultListener {
 			throws IOException {
 		log.info("Received final result for submission {}", message.submissionId());
 		try {
+			submissionService.updateTimeTakenAndMemoryUsed(
+					message.submissionId(), message.timeTaken(), message.memoryUsed());
 			testCaseResultService.processTestResult(message);
 
 			channel.basicAck(tag, /* multiple= */ false);

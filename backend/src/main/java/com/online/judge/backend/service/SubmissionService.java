@@ -84,10 +84,7 @@ public class SubmissionService {
 					logger.info("Submission found: {}", submission);
 					return toSubmissionDetailsUi(submission);
 				})
-				.orElseThrow(() -> {
-					logger.error("Submission with ID {} not found", submissionId);
-					return new SubmissionNotFoundException("Submission with ID " + submissionId + " not found");
-				});
+				.orElseThrow(() -> toSubmissionNotFoundException(submissionId));
 	}
 
 	/**
@@ -118,6 +115,53 @@ public class SubmissionService {
 		return toSubmissionDetailsUi(savedSubmission);
 	}
 
+	/**
+	 * Updates the status for a particular submission.
+	 *
+	 * @param submissionId
+	 *             The ID of the submission
+	 * @param staus
+	 *             The status of the submission
+	 */
 	@Transactional
-	public void updateStatus(Long submissionId, SubmissionStatus status) {}
+	public void updateStatus(Long submissionId, SubmissionStatus status) {
+		Submission submission = submissionRepository
+				.findById(submissionId)
+				.orElseThrow(() -> toSubmissionNotFoundException(submissionId));
+
+		logger.info("Updating status for submission {} from {} to {}.", submissionId, submission.getStatus(), status);
+		submission.setStatus(status);
+		submissionRepository.save(submission);
+	}
+
+	/**
+	 * Updates the time taken and memory used by the overall submission.
+	 *
+	 * @param submissionId
+	 *             The ID of the submission
+	 * @param timeTaken
+	 *             The time taken for the entire submission (cummulative of all test cases)
+	 * @param memoryUsed
+	 *             The memory for the entire submission (cummulative of all test cases)
+	 */
+	@Transactional
+	public void updateTimeTakenAndMemoryUsed(Long submissionId, Double timeTaken, Integer memoryUsed) {
+		Submission submission = submissionRepository
+				.findById(submissionId)
+				.orElseThrow(() -> toSubmissionNotFoundException(submissionId));
+
+		logger.info(
+				"Update time taken and memory used for submission {} to {} and {} respectively.",
+				submissionId,
+				timeTaken,
+				memoryUsed);
+		submission.setExecutionTimeSeconds(timeTaken);
+		submission.setMemoryUsedMb(memoryUsed);
+		submissionRepository.save(submission);
+	}
+
+	private static SubmissionNotFoundException toSubmissionNotFoundException(Long submissionId) {
+		logger.error("Submission with ID {} not found", submissionId);
+		return new SubmissionNotFoundException("Submission with ID " + submissionId + " not found");
+	}
 }

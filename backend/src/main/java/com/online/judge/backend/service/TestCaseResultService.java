@@ -1,6 +1,7 @@
 package com.online.judge.backend.service;
 
 import com.online.judge.backend.dto.message.ResultNotificationMessage;
+import com.online.judge.backend.repository.TestCaseResultRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class TestCaseResultService {
 	private static final Logger logger = LoggerFactory.getLogger(TestCaseResultService.class);
 
-	public TestCaseResultService() {}
+	private TestCaseResultRepository testCaseResultRepository;
+
+	public TestCaseResultService(TestCaseResultRepository testCaseResultRepository) {
+		this.testCaseResultRepository = testCaseResultRepository;
+	}
 
 	@Transactional
 	public void processTestResult(ResultNotificationMessage message) {}
